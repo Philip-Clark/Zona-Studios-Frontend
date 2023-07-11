@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Kablammo&family=Lobster&family=Pacifico&family=Poppins&family=Sacramento&family=Satisfy&family=Sriracha&display=swap');
+
+.lower-canvas {
+  filter: drop-shadow(rgba(255, 255, 255, 1) -1px -1px 0px)
+    drop-shadow(rgba(0, 0, 0, 0.303) 3px 3px 2px) drop-shadow(rgba(0, 0, 0, 0.319) 2px 2px 10px);
+}
+
+.App {
+  display: flex;
+  height: 100vh;
+}
+
+.editor {
+  margin: auto;
+  text-align: right;
+  width: fit-content;
+}

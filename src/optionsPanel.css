@@ -1,0 +1,89 @@
+.optionsPanel {
+  z-index: 100;
+  position: absolute;
+  background: #dfdfdf;
+  border-radius: 30px;
+  box-shadow: 5px 5px 20px 1px rgba(0, 0, 0, 0.07);
+  width: 307px;
+  height: calc(90vh - 4em);
+  margin: 5vh 1em;
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  overflow: hidden;
+}
+.optionsPanel > h2 {
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.optionsPanel > h3 {
+  font-weight: 700;
+  font-size: 0.75rem;
+  margin: 0;
+}
+.templates {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1em;
+}
+
+.woods {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.templateButton,
+.wood,
+.color {
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  border: 2px solid #dfdfdf;
+}
+.color {
+  width: 2em;
+  border-radius: 1000px;
+}
+
+.templateButton[data-selected='true'],
+.wood[data-selected='true'],
+.color[data-selected='true'] {
+  border: 2px solid #5bc6cd;
+}
+
+.moreTemplatesButton {
+  padding: 0.3em;
+  border: 1px solid #d4d4d4;
+  border-radius: 10px;
+  background: #ececec;
+  font-family: Poppins;
+  font-weight: 700;
+}
+
+.sizeSelect {
+  border-radius: 0.625rem;
+  padding: 0.5em;
+  border: 1px solid #d4d4d4;
+}
+
+.sizeSelect select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.names {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5em;
+}
+
+.names input {
+  width: 100%;
+  padding: 0.5em;
+  border-radius: 0.625rem;
+  border: 1px solid #d4d4d4;
+}
