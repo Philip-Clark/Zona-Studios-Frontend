@@ -75,17 +75,20 @@ const Canvas = ({ template, wood, size, color, firstName, lastName }) => {
   //Load template
   useEffect(() => {
     editor?.canvas.clear();
-    fabric.loadSVGFromURL(process.env.PUBLIC_URL + '/templates/svg (8).svg', (objects, options) => {
-      objects.forEach((object) => {
-        if (object.isType('text')) {
-          if (object.get('text') === 'first') object.set('id', 'first');
-          if (object.get('text') === 'last') object.set('id', 'last');
-          object.set('initialWidth', object.getScaledWidth());
-        } else object.set('selectable', false);
+    fabric.loadSVGFromURL(
+      process.env.PUBLIC_URL + '/templates/template1.svg',
+      (objects, options) => {
+        objects.forEach((object) => {
+          if (object.isType('text')) {
+            if (object.get('text') === 'first') object.set('id', 'first');
+            if (object.get('text') === 'last') object.set('id', 'last');
+            object.set('initialWidth', object.getScaledWidth());
+          } else object.set('selectable', false);
 
-        editor?.canvas.add(object);
-      });
-    });
+          editor?.canvas.add(object);
+        });
+      }
+    );
   }, [template, editor?.canvas]);
 
   editor?.canvas.setHeight('400');
