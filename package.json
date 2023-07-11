@@ -1,7 +1,7 @@
 {
-  "name": "sign-render",
+  "name": "simple-sign-render",
   "version": "0.1.0",
-  "homepage": "https://philip-clark.github.io/sign-render",
+  "homepage": "https://philip-clark.github.io/simple-sign-render",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
