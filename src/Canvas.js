@@ -41,6 +41,7 @@ function applyPattern(url, shape, patternArea, canvas) {
       const pattern = new fabric.Pattern({
         source: img._element,
         repeat: 'repeat',
+        scaleWithObject: false,
       });
       pattern.scaleX = 10;
       pattern.scaleY = 10;
@@ -68,77 +69,106 @@ const loadAndUse = (font, canvas) => {
     });
 };
 
+const handleColorChange = (color, canvas) => {
+  canvas?._objects.forEach((object) => {
+    if (!object.isType('text')) return;
+    if (color.url === undefined) object.set('fill', color.value);
+    else applyPattern(color.url, object, 'fill', canvas);
+  });
+};
+const handleTextChange = (text, id, canvas) => {
+  canvas?._objects.forEach((object) => {
+    if (object.id !== id) return;
+    object.set('text', text);
+    if (object.getScaledWidth() + object.left + object.get('strokeWidth') * 2 >= canvas.width) {
+      object.scaleToWidth(canvas.width - object.left - object.get('strokeWidth') * 2);
+    }
+  });
+};
+
+const handleSizeChange = (size, canvas) => {
+  canvas?.set('centeredScaling', true);
+  const intSize = parseInt(size.split('x')[0]);
+  const scaleRatio = intSize / 48;
+  const canvasEdgeLength = 400 * scaleRatio;
+  canvas?.setDimensions({ width: canvasEdgeLength, height: canvasEdgeLength });
+  canvas?.setZoom(scaleRatio);
+};
+
+const textShadow = new fabric.Shadow({
+  offsetX: 0.5,
+  offsetY: 0.5,
+  blur: 1,
+  color: '#000000d8',
+});
+
+const handleWoodChange = (wood, canvas) => {
+  canvas?._objects.forEach((object) => {
+    if (object.isType('text')) applyPattern(wood.url, object, 'stroke', canvas);
+    else applyPattern(wood.url, object, 'fill', canvas);
+  });
+};
+
 const Canvas = ({ template, wood, size, color, firstName, lastName }) => {
   const { editor, onReady } = useFabricJSEditor();
-  const [padding, setPadding] = useState(50);
 
   //Load template
   useEffect(() => {
+    editor?.canvas.setHeight('400');
+    editor?.canvas.setWidth('400');
     editor?.canvas.clear();
     fabric.loadSVGFromURL(
-      process.env.PUBLIC_URL + '/templates/template1.svg',
+      process.env.PUBLIC_URL + `/templates/${template.path}`,
       (objects, options) => {
         objects.forEach((object) => {
           if (object.isType('text')) {
             if (object.get('text') === 'first') object.set('id', 'first');
             if (object.get('text') === 'last') object.set('id', 'last');
-            object.set('initialWidth', object.getScaledWidth());
+            object.set('shadow', textShadow);
+
+            object.set({ paintFirst: 'stroke', strokeLineJoin: 'round', strokeLineCap: 'round' });
           } else object.set('selectable', false);
 
           editor?.canvas.add(object);
+
+          handleColorChange(color, editor?.canvas);
+          handleSizeChange(size, editor?.canvas);
+          handleTextChange(firstName, 'first', editor?.canvas);
+          handleTextChange(lastName, 'last', editor?.canvas);
+          handleWoodChange(wood, editor?.canvas);
         });
       }
     );
-  }, [template, editor?.canvas]);
-
-  editor?.canvas.setHeight('400');
-  editor?.canvas.setWidth('400');
+  }, [editor?.canvas, template]);
 
   const setFont = (font) => {
     loadAndUse(font, editor?.canvas);
   };
 
-  //Watch for wood change
   useEffect(() => {
-    editor?.canvas._objects.forEach((object) => {
-      if (object.isType('text')) return;
-      applyPattern(wood.url, object, 'fill', editor?.canvas);
-    });
+    handleWoodChange(wood, editor?.canvas);
+    editor?.canvas.renderAll();
   }, [wood, editor?.canvas]);
 
-  //Watch for Color change
   useEffect(() => {
-    editor?.canvas._objects.forEach((object) => {
-      if (!object.isType('text')) return;
-      if (color.url == undefined) object.set('fill', color.value);
-      else applyPattern(color.url, object, 'fill', editor?.canvas);
-    });
+    handleColorChange(color, editor?.canvas);
+    editor?.canvas.renderAll();
   }, [color, editor?.canvas]);
 
-  //Watch for firstName change
   useEffect(() => {
-    editor?.canvas._objects.forEach((object) => {
-      if (object.id !== 'first') return;
-      object.set('text', firstName);
-      object.scaleToWidth(object.get('initialWidth'));
-    });
+    editor?.canvas.renderAll();
+    handleTextChange(firstName, 'first', editor?.canvas);
+    editor?.canvas.renderAll();
   }, [firstName, editor?.canvas]);
 
-  //Watch for lastName change
   useEffect(() => {
-    editor?.canvas._objects.forEach((object) => {
-      if (object.id !== 'last') return;
-      object.set('text', lastName);
-      object.scaleToWidth(object.get('initialWidth'));
-    });
+    handleTextChange(lastName, 'last', editor?.canvas);
+    editor?.canvas.renderAll();
   }, [lastName, editor?.canvas]);
 
-  //Watch for size change
   useEffect(() => {
-    editor?.canvas.set('centeredScaling', true);
-    const intSize = parseInt(size.split('x')[0]);
-    const scaleRatio = intSize / 48;
-    editor?.canvas.zoomToPoint({ x: 200, y: 200 }, scaleRatio);
+    handleSizeChange(size, editor?.canvas);
+    editor?.canvas.renderAll();
   }, [size, editor?.canvas]);
 
   const rasterize = () => {

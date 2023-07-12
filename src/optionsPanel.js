@@ -3,14 +3,14 @@ import './optionsPanel.css';
 import { PhotoSizeSelectActual } from '@mui/icons-material';
 
 const templates = [
-  { id: 0, name: 'Round Simple', image: '', JSON: null },
-  { id: 1, name: 'Round fancy', image: '', JSON: null },
-  { id: 2, name: 'Round relaxed', image: '', JSON: null },
-  { id: 3, name: 'Round artsy', image: '', JSON: null },
-  { id: 4, name: 'Cutout simple', image: '', JSON: null },
-  { id: 5, name: 'Cutout fancy', image: '', JSON: null },
-  { id: 6, name: 'Cutout relaxed', image: '', JSON: null },
-  { id: 7, name: 'Rectangle Simple', image: '', JSON: null },
+  { id: 0, name: 'Round Simple', path: 'template1.svg' },
+  { id: 1, name: 'Rectangle simple', path: 'template2.svg' },
+  { id: 2, name: 'Cutout simple', path: 'svg (10).svg' },
+  { id: 3, name: '---', path: '' },
+  { id: 4, name: '---', path: '' },
+  { id: 5, name: '---', path: '' },
+  { id: 6, name: '---', path: '' },
+  { id: 7, name: '---', path: '' },
 ];
 
 const woods = [
