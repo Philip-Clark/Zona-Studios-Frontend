@@ -6,7 +6,7 @@ const templates = [
   { id: 0, name: 'Round Simple', path: 'template1.svg' },
   { id: 1, name: 'Rectangle simple', path: 'template2.svg' },
   { id: 2, name: 'Cutout simple', path: 'svg (10).svg' },
-  { id: 3, name: '---', path: '' },
+  { id: 3, name: 'TEST', path: 'Frame 24.svg' },
   { id: 4, name: '---', path: '' },
   { id: 5, name: '---', path: '' },
   { id: 6, name: '---', path: '' },
@@ -135,22 +135,19 @@ const OptionsPanel = ({ getters, setters }) => {
       </div>
       <h3> Text </h3>
       <div className="names">
-        <input
-          type="text"
-          className="firstName"
-          placeholder="First"
-          onChange={(e) => {
-            setters.setFirstName(e.target.value);
-          }}
-        />
-        <input
-          type="text"
-          className="lastName"
-          placeholder="Last"
-          onChange={(e) => {
-            setters.setLastName(e.target.value);
-          }}
-        />
+        {getters.fields.map((field) => (
+          <input
+            key={field.id}
+            type="text"
+            className="field"
+            placeholder={field.id.replace('editable', '')}
+            onChange={(e) => {
+              field.text = e.target.value;
+
+              setters.setFields(getters.fields.map((f) => (f.id === field.id ? field : f)));
+            }}
+          />
+        ))}
       </div>
       <div className="colors">
         {colors.map((color) => {

@@ -3,6 +3,7 @@ import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
 import { imagedataToSVG } from 'imagetracerjs';
 import { useEffect, useState } from 'react';
 import FontFaceObserver from 'fontfaceobserver';
+import googleFonts from 'google-fonts';
 
 const addSVGStringToCanvas = (svgString, canvas) => {
   fabric.loadSVGFromString(svgString, (objects, options) => {
@@ -43,8 +44,8 @@ function applyPattern(url, shape, patternArea, canvas) {
         repeat: 'repeat',
         scaleWithObject: false,
       });
-      pattern.scaleX = 10;
-      pattern.scaleY = 10;
+      pattern.scaleX = 100;
+      pattern.scaleY = 100;
       shape.set(patternArea, pattern);
       canvas.renderAll();
     },
@@ -54,19 +55,33 @@ function applyPattern(url, shape, patternArea, canvas) {
   );
 }
 
-const loadAndUse = (font, canvas) => {
+const loadAndUse = (font, canvas, object) => {
   const myFont = new FontFaceObserver(font);
   myFont
     .load()
     .then(function () {
       // when font is loaded, use it.
-      canvas.getActiveObject().set('fontFamily', font);
+      object.set('fontFamily', font);
       canvas.requestRenderAll();
+      return true;
     })
     .catch(function (e) {
       console.log(e);
       alert('font loading failed ' + font);
+      return false;
     });
+};
+
+const loadGoogleFont = (fontName) => {
+  googleFonts.add({ [fontName]: true }); // or some other options if you need
+  const fontObserver = new FontFaceObserver(fontName);
+  return fontObserver.load().catch((err) => alert(`Can't load Font: ${fontName}`, err));
+};
+
+const loadFontFromURL = async (url, fontFamily, canvas, object) => {
+  await loadGoogleFont(fontFamily);
+  object.set('fontFamily', fontFamily);
+  canvas?.requestRenderAll();
 };
 
 const handleColorChange = (color, canvas) => {
@@ -109,35 +124,49 @@ const handleWoodChange = (wood, canvas) => {
   });
 };
 
-const Canvas = ({ template, wood, size, color, firstName, lastName }) => {
+const Canvas = ({ template, wood, size, color, setFields, fields }) => {
   const { editor, onReady } = useFabricJSEditor();
+
+  const loadSVGCallback = (objects, options) => {
+    objects.forEach((object) => {
+      if (object.isType('text')) {
+        if (object.id.includes('editable')) {
+          setFields((field) => [...field, object]);
+        }
+        object.set('shadow', textShadow);
+
+        object.set({ paintFirst: 'stroke', strokeLineJoin: 'round', strokeLineCap: 'round' });
+      } else object.set('selectable', false);
+
+      editor?.canvas.add(object);
+
+      handleColorChange(color, editor?.canvas);
+      handleSizeChange(size, editor?.canvas);
+
+      handleWoodChange(wood, editor?.canvas);
+    });
+  };
+
+  const loadSVGReviver = (img, object) => {
+    const fontFace = img.attributes['font-family']?.value;
+    if (!fontFace) return;
+    const googleFontsUrl = `https://fonts.googleapis.com/css2?family=${fontFace.replace(
+      / /g,
+      '+'
+    )}`;
+    loadFontFromURL(googleFontsUrl, fontFace, editor?.canvas, object);
+  };
 
   //Load template
   useEffect(() => {
+    setFields([]);
     editor?.canvas.setHeight('400');
     editor?.canvas.setWidth('400');
     editor?.canvas.clear();
     fabric.loadSVGFromURL(
       process.env.PUBLIC_URL + `/templates/${template.path}`,
-      (objects, options) => {
-        objects.forEach((object) => {
-          if (object.isType('text')) {
-            if (object.get('text') === 'first') object.set('id', 'first');
-            if (object.get('text') === 'last') object.set('id', 'last');
-            object.set('shadow', textShadow);
-
-            object.set({ paintFirst: 'stroke', strokeLineJoin: 'round', strokeLineCap: 'round' });
-          } else object.set('selectable', false);
-
-          editor?.canvas.add(object);
-
-          handleColorChange(color, editor?.canvas);
-          handleSizeChange(size, editor?.canvas);
-          handleTextChange(firstName, 'first', editor?.canvas);
-          handleTextChange(lastName, 'last', editor?.canvas);
-          handleWoodChange(wood, editor?.canvas);
-        });
-      }
+      loadSVGCallback,
+      loadSVGReviver
     );
   }, [editor?.canvas, template]);
 
@@ -157,14 +186,10 @@ const Canvas = ({ template, wood, size, color, firstName, lastName }) => {
 
   useEffect(() => {
     editor?.canvas.renderAll();
-    handleTextChange(firstName, 'first', editor?.canvas);
+    fields.forEach((field) => handleTextChange(field.text, field.id, editor?.canvas));
+    console.log({ fields });
     editor?.canvas.renderAll();
-  }, [firstName, editor?.canvas]);
-
-  useEffect(() => {
-    handleTextChange(lastName, 'last', editor?.canvas);
-    editor?.canvas.renderAll();
-  }, [lastName, editor?.canvas]);
+  }, [fields, editor?.canvas]);
 
   useEffect(() => {
     handleSizeChange(size, editor?.canvas);

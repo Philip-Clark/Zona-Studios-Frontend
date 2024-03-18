@@ -19,28 +19,27 @@ function App() {
     value: 'white',
   });
   const [size, setSize] = useState('16x16');
-  const [firstName, setFirstName] = useState('John');
+  const [fields, setFields] = useState([]);
   const [lastName, setLastName] = useState('Doe');
 
   return (
     <div className="App">
       <OptionsPanel
-        getters={{ selectedTemplate, selectedWood, selectedColor, size, firstName, lastName }}
+        getters={{ selectedTemplate, selectedWood, selectedColor, size, fields }}
         setters={{
           setSelectedTemplate,
           setSelectedWood,
           setSelectedColor,
           setSize,
-          setFirstName,
-          setLastName,
+          setFields,
         }}
       />
       <Canvas
         template={selectedTemplate}
         wood={selectedWood}
         color={selectedColor}
-        firstName={firstName}
-        lastName={lastName}
+        fields={fields}
+        setFields={setFields}
         size={size}
       />
     </div>
