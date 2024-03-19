@@ -8,7 +8,8 @@ body {
   background-image: url(../public/wall1.jpg);
   height: 100vh;
   background-size: cover;
-  background-position: left;
+  transition: background-size 0.5s ease-in-out;
+  background-position: center;
 }
 
 code {

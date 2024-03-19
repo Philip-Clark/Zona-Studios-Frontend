@@ -140,10 +140,10 @@ const OptionsPanel = ({ getters, setters }) => {
             key={field.id}
             type="text"
             className="field"
-            placeholder={field.id.replace('editable', '')}
+            placeholder={''}
             onChange={(e) => {
               field.text = e.target.value;
-
+              console.log(field);
               setters.setFields(getters.fields.map((f) => (f.id === field.id ? field : f)));
             }}
           />
