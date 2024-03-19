@@ -143,9 +143,21 @@ const handleWoodChange = (wood, canvas) => {
   });
 };
 
+fabric.Object.prototype.set({
+  snapAngle: 10,
+  originX: 'center',
+  originY: 'center',
+  objectCaching: false,
+  cornerStyle: 'circle',
+  cornerColor: '#38373f',
+  cornerSize: 12,
+  transparentCorners: false,
+  borderColor: '#38373f',
+  borderScaleFactor: 2.5,
+});
+
 const Canvas = ({ template, wood, size, color, setFields, fields }) => {
   const { editor, onReady } = useFabricJSEditor();
-
   const loadSVGCallback = (objects, options) => {
     handleColorChange(color, editor?.canvas);
     handleSizeChange(size, editor?.canvas);
@@ -209,6 +221,8 @@ const Canvas = ({ template, wood, size, color, setFields, fields }) => {
       cutout.set('id', 'cutout');
       cutout.bringToFront();
     }
+
+    objectGrouped.addWithUpdate();
   };
 
   //Load template
