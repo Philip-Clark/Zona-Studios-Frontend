@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import './fonts.css';
 import Canvas from './Canvas';
@@ -21,17 +21,64 @@ function App() {
   const [size, setSize] = useState('16x16');
   const [fields, setFields] = useState([]);
   const [lastName, setLastName] = useState('Doe');
+  const [fonts, setFonts] = useState([
+    'Roboto',
+    'Open Sans',
+    'Montserrat',
+    'Lato',
+    'Raleway',
+    'Poppins',
+    'Nunito',
+    'Source Sans Pro',
+    'Oswald',
+    'Ubuntu',
+    'Helvetica',
+    'Times New Roman',
+    'Courier New',
+    'Verdana',
+    'Georgia',
+    'Comic Sans MS',
+    'Trebuchet MS',
+    'Arial Black',
+    'Impact',
+    'Pacifico',
+    'Caveat',
+    'Amatic SC',
+    'Indie Flower',
+    'Great Vibes',
+    'Dancing Script',
+    'Permanent Marker',
+    'Josefin Sans',
+    'Playfair Display',
+    'Quicksand',
+    'Exo',
+    'Baloo',
+    'Comfortaa',
+    'Orbitron',
+    'Press Start 2P',
+    'Chewy',
+    'Faster One',
+    'Luckiest Guy',
+    'Roboto Mono',
+    'Inconsolata',
+  ]);
+  const [font, setFont] = useState(fonts[0]);
+
+  useEffect(() => {
+    console.log('font:', font);
+  }, [font]);
 
   return (
     <div className="App">
       <OptionsPanel
-        getters={{ selectedTemplate, selectedWood, selectedColor, size, fields }}
+        getters={{ selectedTemplate, selectedWood, selectedColor, size, fields, fonts }}
         setters={{
           setSelectedTemplate,
           setSelectedWood,
           setSelectedColor,
           setSize,
           setFields,
+          setFont,
         }}
       />
       <Canvas
@@ -41,6 +88,8 @@ function App() {
         fields={fields}
         setFields={setFields}
         size={size}
+        font={font}
+        fonts={fonts}
       />
     </div>
   );

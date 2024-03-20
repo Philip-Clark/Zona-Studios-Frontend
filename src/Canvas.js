@@ -40,15 +40,16 @@ function applyPattern(url, shape, patternArea, canvas) {
   fabric.Image.fromURL(
     url,
     function (img) {
-      const pattern = new fabric.Pattern({
-        source: img._element,
-        repeat: 'repeat',
-        scaleWithObject: false,
-      });
-      pattern.scaleX = 100;
-      pattern.scaleY = 100;
-      shape.set(patternArea, pattern);
-      canvas.renderAll();
+      const pattern = new fabric.Pattern(
+        {
+          source: img._element,
+          repeat: 'repeat',
+        },
+        (pattern) => {
+          shape.set(patternArea, pattern);
+          canvas.renderAll();
+        }
+      );
     },
     {
       crossOrigin: 'anonymous',
@@ -73,10 +74,10 @@ const loadAndUse = (font, canvas, object) => {
     });
 };
 
-const loadGoogleFont = (fontName) => {
-  googleFonts.add({ [fontName]: true }); // or some other options if you need
+const loadGoogleFont = async (fontName) => {
+  await googleFonts.add({ [fontName]: true }); // or some other options if you need
   const fontObserver = new FontFaceObserver(fontName);
-  return fontObserver.load().catch((err) => alert(`Can't load Font: ${fontName}`, err));
+  return fontObserver.load().catch((err) => console.log(`Can't load Font: ${fontName}\n${err}`));
 };
 
 const loadFontFromURL = async (fontFamily, canvas, object) => {
@@ -86,19 +87,21 @@ const loadFontFromURL = async (fontFamily, canvas, object) => {
 };
 
 const handleColorChange = (color, canvas) => {
-  canvas?._objects.forEach((object) => {
+  const objectsActive =
+    canvas?.getActiveObjects() === undefined || canvas?.getActiveObjects().length > 0;
+  const objectsToPaint = objectsActive ? canvas?.getActiveObjects() : canvas?._objects;
+  objectsToPaint?.forEach((object) => {
     const main = object._objects.find((child) => child.id === 'main');
-    if (!main?.isType('text')) return;
-    if (color.url === undefined) return main.set('fill', color.value);
-    applyPattern(color.url, main, 'fill', canvas);
-  });
-  canvas?._objects.forEach((object) => {
-    const main = object._objects.find((child) => child.id === 'cutout');
+    const cutout = object._objects.find((child) => child.id === 'cutout');
 
     if (!main?.isType('text')) return;
-    console.log({ main });
-    if (color.url === undefined) return main.set('fill', color.value);
+    if (color.url === undefined) {
+      main.set('fill', color.value);
+      cutout?.set('fill', color.value);
+      return;
+    }
     applyPattern(color.url, main, 'fill', canvas);
+    applyPattern(color.url, cutout, 'fill', canvas);
   });
 };
 
@@ -110,6 +113,20 @@ const handleTextChange = (text, id, canvas) => {
       child.set('text', text);
       canvas?.renderAll();
 
+      child.scaleToWidth(object.width - child.get('strokeWidth') * 2);
+    });
+
+    canvas?.renderAll();
+    object.setCoords();
+  });
+};
+
+const handleFontChange = (font, canvas) => {
+  canvas?.getActiveObjects().forEach((object) => {
+    object._objects.forEach((child) => {
+      canvas?.renderAll();
+      console.log({ font: font });
+      loadAndUse(font, canvas, child);
       child.scaleToWidth(object.width - child.get('strokeWidth') * 2);
     });
 
@@ -156,13 +173,15 @@ fabric.Object.prototype.set({
   borderScaleFactor: 2.5,
 });
 
-const Canvas = ({ template, wood, size, color, setFields, fields }) => {
+const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts }) => {
   const { editor, onReady } = useFabricJSEditor();
-  const loadSVGCallback = (objects, options) => {
-    handleColorChange(color, editor?.canvas);
-    handleSizeChange(size, editor?.canvas);
-    handleWoodChange(wood, editor?.canvas);
-  };
+  const loadSVGCallback = (objects, options) => {};
+  useEffect(() => {
+    fonts.forEach(async (font) => {
+      await loadGoogleFont(font);
+    });
+    console.log('fonts:', fonts);
+  }, [fonts]);
 
   const getLightingElements = (object, stroke = false) => {
     const shadowObject = fabric.util.object.clone(object);
@@ -184,10 +203,10 @@ const Canvas = ({ template, wood, size, color, setFields, fields }) => {
     return [shadowObject, highlightObject];
   };
 
-  const loadSVGReviver = (img, object) => {
+  const loadSVGReviver = async (img, object) => {
     //? LOAD FONT
     const fontFace = img.attributes['font-family']?.value;
-    if (fontFace) loadFontFromURL(fontFace, editor?.canvas, object);
+    if (fontFace) await loadFontFromURL(fontFace, editor?.canvas, object);
 
     // ? Set object properties
     if (object.isType('text')) {
@@ -216,13 +235,22 @@ const Canvas = ({ template, wood, size, color, setFields, fields }) => {
     object.set('id', 'main');
 
     if (isCutout) {
-      console.log({ isCutout });
       objectGrouped.add(cutout, ...getLightingElements(object));
       cutout.set('id', 'cutout');
       cutout.bringToFront();
     }
 
     objectGrouped.addWithUpdate();
+
+    objectGrouped.setObjectsCoords();
+
+    handleColorChange(color, editor?.canvas);
+    handleSizeChange(size, editor?.canvas);
+    handleWoodChange(wood, editor?.canvas);
+
+    objectGrouped.on('modified', function () {
+      objectGrouped.bringToFront();
+    });
   };
 
   //Load template
@@ -250,7 +278,6 @@ const Canvas = ({ template, wood, size, color, setFields, fields }) => {
 
   useEffect(() => {
     editor?.canvas.renderAll();
-    console.log({ fields });
     fields.forEach((field) => handleTextChange(field.text, field.id, editor?.canvas));
     editor?.canvas.renderAll();
   }, [fields, editor?.canvas]);
@@ -259,6 +286,11 @@ const Canvas = ({ template, wood, size, color, setFields, fields }) => {
     handleSizeChange(size, editor?.canvas);
     editor?.canvas.renderAll();
   }, [size, editor?.canvas]);
+
+  useEffect(() => {
+    handleFontChange(font, editor?.canvas);
+    editor?.canvas.renderAll();
+  }, [font, editor?.canvas]);
 
   const rasterize = () => {
     let cutout = undefined;

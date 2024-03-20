@@ -7,19 +7,27 @@
   width: 307px;
   height: calc(90vh - 4em);
   margin: 5vh 1em;
-  padding: 2em;
+  padding: 1em;
+  overflow: hidden;
+}
+
+.optionsPanel > .scrollBox {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #5bc6cd #dfdfdf;
+  padding: 1em;
+  height: calc(100% - 2em);
   display: flex;
   flex-direction: column;
   gap: 1em;
-  overflow: hidden;
 }
-.optionsPanel > h2 {
+.optionsPanel > .scrollBox > h2 {
   font-weight: 700;
   font-size: 1rem;
   margin: 0;
 }
 
-.optionsPanel > h3 {
+.optionsPanel > .scrollBox > h3 {
   font-weight: 700;
   font-size: 0.75rem;
   margin: 0;
@@ -37,14 +45,19 @@
 
 .templateButton,
 .wood,
-.color {
+.color,
+.fonts {
   aspect-ratio: 1 / 1;
   border-radius: 10px;
-  border: 2px solid #dfdfdf;
+  border: 1px solid #aaaaaa;
+  cursor: pointer;
 }
 .color {
   width: 2em;
   border-radius: 1000px;
+}
+.fonts {
+  padding: 0.5em;
 }
 
 .templateButton[data-selected='true'],
@@ -77,6 +90,7 @@
 .names {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   width: 100%;
   gap: 0.5em;
 }
