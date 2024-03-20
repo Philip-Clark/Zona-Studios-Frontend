@@ -63,7 +63,7 @@ function App() {
     'Inconsolata',
   ]);
   const [font, setFont] = useState(fonts[0]);
-
+  const [saveSvg, setSaveSvg] = useState();
   useEffect(() => {
     console.log('font:', font);
   }, [font]);
@@ -90,7 +90,21 @@ function App() {
         size={size}
         font={font}
         fonts={fonts}
+        setSaveSvg={setSaveSvg}
       />
+      <button
+        className="saveSvg"
+        onClick={() => {
+          saveSvg();
+          setSelectedTemplate({
+            id: 0,
+            name: 'Round Simple',
+            path: 'template1.svg',
+          });
+        }}
+      >
+        Save SVG
+      </button>
     </div>
   );
 }

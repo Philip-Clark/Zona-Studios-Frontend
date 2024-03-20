@@ -173,14 +173,15 @@ fabric.Object.prototype.set({
   borderScaleFactor: 2.5,
 });
 
-const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts }) => {
+const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts, setSaveSvg }) => {
   const { editor, onReady } = useFabricJSEditor();
+
   const loadSVGCallback = (objects, options) => {};
+
   useEffect(() => {
     fonts.forEach(async (font) => {
       await loadGoogleFont(font);
     });
-    console.log('fonts:', fonts);
   }, [fonts]);
 
   const getLightingElements = (object, stroke = false) => {
@@ -259,6 +260,7 @@ const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts })
     editor?.canvas.setHeight('400');
     editor?.canvas.setWidth('400');
     editor?.canvas.clear();
+
     fabric.loadSVGFromURL(
       process.env.PUBLIC_URL + `/templates/${template.path}`,
       loadSVGCallback,
@@ -292,37 +294,67 @@ const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts })
     editor?.canvas.renderAll();
   }, [font, editor?.canvas]);
 
-  const rasterize = () => {
-    let cutout = undefined;
-    editor?.canvas.clone((clone) => {
-      cutout = clone;
+  useEffect(() => {
+    const toPng = () => {
+      console.log('attempting to save');
+      if (!editor?.canvas) return;
+      const a = document.createElement('a');
 
-      cutout._objects.forEach((object) => {
-        object.set('fill', 'black');
-        object.set('stroke', 'black');
-      });
-      cutout.set('backgroundColor', 'transparent');
-      cutout.renderAll();
-      const dataUrl = cutout.toDataURL({ format: 'png' });
-      convertURIToImageData(dataUrl).then(function (imageData) {
-        const svgString = imagedataToSVG(imageData, {
-          ltres: 1,
-          qtres: 1,
-          pathomit: 70,
-          rightangleenhance: false,
-          blurradius: 0.2,
-          blurdelta: 2,
-          linefilter: true,
-          scale: 1,
+      a.href = editor?.canvas.toDataURL('image/png');
+      a.download = `preview-${fields.map((field) => field.text).join('-')}-${template.name}.png`;
+      a.click();
+
+      const saved = editor?.canvas.toJSON();
+
+      editor?.canvas.getObjects().forEach((object) => {
+        if (!object.isType('group')) return;
+        object._objects.forEach((child) => {
+          if (child.id !== 'main') return child.set('opacity', '0');
+
+          if (child.isType('text')) {
+            child.set('fill', 'black');
+            child.set('stroke', 'black');
+          } else {
+            child.set('fill', 'black');
+            child.set('stroke', 'black');
+          }
         });
-        console.log({ svgString });
-
-        addSVGStringToCanvas(svgString, editor?.canvas);
       });
-    });
-  };
 
-  return <FabricJSCanvas className="editor" onReady={onReady} />;
+      a.href = editor?.canvas.toDataURL('image/png');
+      a.download = `layer1-${fields.map((field) => field.text).join('-')}-${template.name}.png`;
+      a.click();
+
+      editor?.canvas.getObjects().forEach((object) => {
+        if (!object.isType('group')) return;
+        object._objects.forEach((child) => {
+          if (child.id !== 'main') return child.set('opacity', '0');
+
+          if (child.isType('text')) {
+            child.set('fill', 'black');
+            child.set('stroke', 'transparent');
+          } else {
+            child.set('fill', 'transparent');
+            child.set('stroke', 'transparent');
+          }
+        });
+      });
+
+      a.href = editor?.canvas.toDataURL('image/png');
+      a.download = `layer2-${fields.map((field) => field.text).join('-')}-${template.name}.png`;
+      a.click();
+
+      editor?.canvas.clear();
+    };
+
+    setSaveSvg(() => toPng);
+  }, [editor?.canvas, setSaveSvg]);
+
+  return (
+    <div className="fabricHolder">
+      <FabricJSCanvas className="editor" onReady={onReady} />
+    </div>
+  );
 };
 
 export default Canvas;

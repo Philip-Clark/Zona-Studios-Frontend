@@ -101,3 +101,16 @@
   border-radius: 0.625rem;
   border: 1px solid #d4d4d4;
 }
+
+.saveSvg {
+  padding: 0.5em;
+  border: 1px solid #d4d4d4;
+  border-radius: 10px;
+  background: #ececec;
+  font-family: Poppins;
+  font-weight: 700;
+  cursor: pointer;
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
+}
