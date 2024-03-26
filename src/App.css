@@ -21,7 +21,7 @@
   text-align: right;
   width: fit-content;
   transition: transform 0.5s ease-in-out;
-  border: dashed rgb(255, 255, 255) 8px;
+  /* border: dashed rgb(255, 255, 255) 8px; */
 
   transform: scale(0.5);
 }

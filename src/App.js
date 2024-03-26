@@ -88,11 +88,6 @@ function App() {
           className="saveSvg"
           onClick={() => {
             saveSvg();
-            setSelectedTemplate({
-              id: 0,
-              name: 'Round Simple',
-              path: 'template1.svg',
-            });
           }}
         >
           Save SVG
