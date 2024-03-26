@@ -1,9 +1,10 @@
 import { fabric } from 'fabric';
 import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
-import { imagedataToSVG } from 'imagetracerjs';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import FontFaceObserver from 'fontfaceobserver';
 import googleFonts from 'google-fonts';
+import { valuesContext } from '../contexts';
+
 const addSVGStringToCanvas = (svgString, canvas) => {
   fabric.loadSVGFromString(svgString, (objects, options) => {
     const group = new fabric.Group(objects);
@@ -161,15 +162,19 @@ fabric.Object.prototype.set({
   cornerSize: 46,
   transparentCorners: false,
   borderColor: '#38373f',
-  borderScaleFactor: 4,
+  borderScaleFactor: 6,
+  perPixelTargetFind: true,
 });
 
-const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts, setSaveSvg }) => {
+const Canvas = ({ setSaveSvg }) => {
   const { editor, onReady } = useFabricJSEditor();
+  const { selectedTemplate, selectedWood, size, selectedColor, setFields, fields, font, fonts } =
+    useContext(valuesContext);
 
   const loadSVGCallback = (objects, options) => {};
 
   useEffect(() => {
+    console.log('loading fonts', font);
     fonts.forEach(async (font) => {
       await loadGoogleFont(font);
     });
@@ -236,9 +241,9 @@ const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts, s
 
     objectGrouped.setObjectsCoords();
 
-    handleColorChange(color, editor?.canvas);
+    handleColorChange(selectedColor, editor?.canvas);
     handleSizeChange(size, editor?.canvas);
-    handleWoodChange(wood, editor?.canvas);
+    handleWoodChange(selectedWood, editor?.canvas);
 
     objectGrouped.on('modified', function () {
       objectGrouped.bringToFront();
@@ -254,21 +259,21 @@ const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts, s
     editor?.canvas.setZoom(4);
 
     fabric.loadSVGFromURL(
-      process.env.PUBLIC_URL + `/templates/${template.path}`,
+      process.env.PUBLIC_URL + `/templates/${selectedTemplate.path}`,
       loadSVGCallback,
       loadSVGReviver
     );
-  }, [editor?.canvas, template]);
+  }, [editor?.canvas, selectedTemplate]);
 
   useEffect(() => {
-    handleWoodChange(wood, editor?.canvas);
+    handleWoodChange(selectedWood, editor?.canvas);
     editor?.canvas.renderAll();
-  }, [wood, editor?.canvas]);
+  }, [selectedWood, editor?.canvas]);
 
   useEffect(() => {
-    handleColorChange(color, editor?.canvas);
+    handleColorChange(selectedColor, editor?.canvas);
     editor?.canvas.renderAll();
-  }, [color, editor?.canvas]);
+  }, [selectedColor, editor?.canvas]);
 
   useEffect(() => {
     editor?.canvas.renderAll();
@@ -306,11 +311,9 @@ const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts, s
 
     const a = document.createElement('a');
     a.href = editor?.canvas.toDataURL('image/png');
-    a.download = `layer1-${fields.map((field) => field.text).join('-')}-${template.name}.png`;
-    a.click();
-
-    a.href = `data:image/svg+xml,${encodeURIComponent(background)}`;
-    a.download = `layer1-${fields.map((field) => field.text).join('-')}-${template.name}.svg`;
+    a.download = `Background-${fields.map((field) => field.text).join('-')}-${
+      selectedTemplate.name
+    }.png`;
     a.click();
 
     return background;
@@ -333,14 +336,11 @@ const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts, s
 
     const a = document.createElement('a');
     a.href = editor?.canvas.toDataURL('image/png');
-    a.download = `layer2-${fields.map((field) => field.text).join('-')}-${template.name}.png`;
+    a.download = `foreground-${fields.map((field) => field.text).join('-')}-${
+      selectedTemplate.name
+    }.png`;
     a.click();
 
-    // save foreground and background as svgs
-
-    a.href = `data:image/svg+xml,${encodeURIComponent(foreground)}`;
-    a.download = `layer2-${fields.map((field) => field.text).join('-')}-${template.name}.svg`;
-    a.click();
     return foreground;
   };
   useEffect(() => {
@@ -352,17 +352,19 @@ const Canvas = ({ template, wood, size, color, setFields, fields, font, fonts, s
       const originalCanvas = editor?.canvas.toJSON();
 
       a.href = editor?.canvas.toDataURL('image/png');
-      a.download = `preview-${fields.map((field) => field.text).join('-')}-${template.name}.png`;
+      a.download = `preview-${fields.map((field) => field.text).join('-')}-${
+        selectedTemplate.name
+      }.png`;
       a.click();
 
-      saveBackground();
-      saveForeground();
+      await saveBackground();
+      await saveForeground();
 
       editor?.canvas.clear();
     };
 
     setSaveSvg(() => toPng);
-  }, [editor?.canvas, setSaveSvg]);
+  }, [editor?.canvas, setSaveSvg, fields, selectedTemplate]);
 
   return (
     <div className="fabricHolder">
