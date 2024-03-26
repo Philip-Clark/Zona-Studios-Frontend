@@ -89,49 +89,36 @@ const loadFontFromURL = async (fontFamily, canvas, object) => {
 const handleColorChange = (color, canvas) => {
   const objectsActive =
     canvas?.getActiveObjects() === undefined || canvas?.getActiveObjects().length > 0;
-  const objectsToPaint = objectsActive ? canvas?.getActiveObjects() : canvas?._objects;
-  objectsToPaint?.forEach((object) => {
-    const main = object._objects.find((child) => child.id.includes('main'));
-    const cutout = object._objects.find((child) => child.id === 'cutout');
 
-    if (!main?.isType('text')) return;
+  const objectsToPaint = objectsActive ? canvas?.getActiveObjects() : canvas?._objects;
+
+  objectsToPaint?.forEach((object) => {
+    if (!object?.isType('text')) return;
     if (color.url === undefined) {
-      main.set('fill', color.value);
-      cutout?.set('fill', color.value);
+      object.set('fill', color.value);
       return;
     }
-    applyPattern(color.url, main, 'fill', canvas);
-    applyPattern(color.url, cutout, 'fill', canvas);
+    applyPattern(color.url, object, 'fill', canvas);
   });
 };
 
 const handleTextChange = (text, id, canvas) => {
   canvas?._objects.forEach((object) => {
-    if (!object.isType('group')) return;
     if (!object.id.includes(id)) return;
-    object._objects.forEach((child) => {
-      child.set('text', text);
-      canvas?.renderAll();
-
-      child.scaleToWidth(object.width - child.get('strokeWidth') * 2);
-    });
-
+    object.set('text', text);
     canvas?.renderAll();
-    object.setCoords();
+    if (object.width * object.scaleX > canvas?.width / 4) object.scaleToWidth(canvas?.width);
+    canvas?.renderAll();
   });
 };
 
 const handleFontChange = (font, canvas) => {
   canvas?.getActiveObjects().forEach((object) => {
-    object._objects.forEach((child) => {
-      canvas?.renderAll();
-      console.log({ font: font });
-      loadAndUse(font, canvas, child);
-      child.scaleToWidth(object.width - child.get('strokeWidth') * 2);
-    });
-
     canvas?.renderAll();
-    object.setCoords();
+    console.log({ font: font });
+    loadAndUse(font, canvas, object);
+    if (object.width * object.scaleX > canvas?.width / 4) object.scaleToWidth(canvas?.width);
+    canvas?.renderAll();
   });
 };
 
@@ -146,9 +133,8 @@ const handleSizeChange = (size, canvas) => {
 
 const handleWoodChange = (wood, canvas) => {
   canvas?._objects.forEach((object) => {
-    const main = object._objects.find((child) => child.id.includes('main'));
-    if (main.isType('text')) return applyPattern(wood.url, main, 'stroke', canvas);
-    applyPattern(wood.url, main, 'fill', canvas);
+    if (object.isType('text')) return applyPattern(wood.url, object, 'stroke', canvas);
+    applyPattern(wood.url, object, 'fill', canvas);
   });
 };
 
@@ -160,10 +146,16 @@ fabric.Object.prototype.set({
   cornerStyle: 'circle',
   cornerColor: '#38373f',
   cornerSize: 46,
+  shadow: 'rgba(0, 0, 0, 0.706) -2px 2px 5px',
   transparentCorners: false,
   borderColor: '#38373f',
   borderScaleFactor: 6,
   perPixelTargetFind: true,
+  padding: 100,
+});
+
+fabric.Text.prototype.set({
+  shadow: 'rgba(0, 0, 0, 1) -0.2px 0.2px 0.5px',
 });
 
 const Canvas = ({ setSaveSvg }) => {
@@ -206,47 +198,28 @@ const Canvas = ({ setSaveSvg }) => {
     if (fontFace) await loadFontFromURL(fontFace, editor?.canvas, object);
 
     // ? Set object properties
+
+    if (object.id.includes('editable')) {
+      const id = object.id.replace('editable ', '');
+      setFields((field) => [...field, { id, text: object.text }]);
+    }
+
     if (object.isType('text')) {
-      if (object.id.includes('editable')) {
-        const id = object.id.replace('editable ', '');
-        setFields((field) => [...field, { id, text: object.text }]);
-      }
+      object.id = 'foreground ' + object.id;
       object.set({ paintFirst: 'stroke', strokeLineJoin: 'round', strokeLineCap: 'round' });
     } else {
+      object.id = 'background ' + object.id;
       object.set('selectable', false);
     }
 
-    // //? Create shadows and highlights for each object
-    const isCutout = object.get('strokeWidth') > 0 && object.get('stroke') !== '#00000000';
-    const [shadowObject, highlightObject] = getLightingElements(object, true);
-
-    const objectGrouped = new fabric.Group([highlightObject, shadowObject, object]);
-
-    objectGrouped.set('selectable', object.isType('text'));
-
-    objectGrouped.set('id', object.id);
-    editor?.canvas.add(objectGrouped);
-
-    object.set('id', 'main');
-
-    if (isCutout) {
-      const cutout = fabric.util.object.clone(object);
-      cutout.set('stroke', '#00000000');
-      objectGrouped.add(cutout, ...getLightingElements(object));
-      cutout.set('id', 'cutout');
-      cutout.bringToFront();
-    }
-
-    objectGrouped.addWithUpdate();
-
-    objectGrouped.setObjectsCoords();
+    editor?.canvas.add(object);
 
     handleColorChange(selectedColor, editor?.canvas);
     handleSizeChange(size, editor?.canvas);
     handleWoodChange(selectedWood, editor?.canvas);
 
-    objectGrouped.on('modified', function () {
-      objectGrouped.bringToFront();
+    object.on('modified', function () {
+      object.bringToFront();
     });
   };
 
@@ -257,6 +230,7 @@ const Canvas = ({ setSaveSvg }) => {
     editor?.canvas.setWidth('1600');
     editor?.canvas.clear();
     editor?.canvas.setZoom(4);
+    editor?.canvas.set('targetFindTolerance', 20);
 
     fabric.loadSVGFromURL(
       process.env.PUBLIC_URL + `/templates/${selectedTemplate.path}`,
@@ -291,80 +265,80 @@ const Canvas = ({ setSaveSvg }) => {
     editor?.canvas.renderAll();
   }, [font, editor?.canvas]);
 
-  const saveBackground = async () => {
-    // BACKGROUND
-
-    editor?.canvas.getObjects().forEach((group) => {
-      if (!group.isType('group')) return editor?.canvas.remove(group);
-      const main = group._objects.find((child) => child.id.includes('main'));
-
-      const other = group._objects.filter((child) => child !== main);
-      group.remove(...other);
-      if (!main) return editor?.canvas.remove(group);
-
-      main.set({ fill: 'red', stroke: 'red' });
-      if (main.isType('text') && main.get('strokeWidth') === 0) group.remove(main);
-    });
-
+  const exportCurrentCanvas = (fileName) => {
     editor?.canvas.renderAll();
-    const background = editor?.canvas.toSVG();
-
     const a = document.createElement('a');
     a.href = editor?.canvas.toDataURL('image/png');
-    a.download = `Background-${fields.map((field) => field.text).join('-')}-${
-      selectedTemplate.name
-    }.png`;
+    a.download = `${fileName}.png`;
     a.click();
-
-    return background;
   };
 
-  const saveForeground = async () => {
-    editor?.canvas.getObjects().forEach((group) => {
-      if (!group.isType('group')) return editor?.canvas.remove(group);
-      const cutout = group._objects.find((child) => child.id.includes('cutout'));
-      const main = cutout ? cutout : group._objects.find((child) => child.isType('text'));
-      const other = group._objects.filter((child) => child !== main);
-      if (!main) return editor?.canvas.remove(group);
+  const saveBackground = async (original) => {
+    return new Promise((resolve) => {
+      console.log('saving background');
+      editor?.canvas.loadFromJSON(original, () => {
+        editor?.canvas.renderAll();
+        editor?.canvas.getObjects().forEach((object) => {
+          if (!object.id.includes('background')) return editor?.canvas.remove(object);
+          object.set({ fill: 'red', stroke: 'red' });
+        });
 
-      group.remove(...other);
-      main.set({ fill: 'green', stroke: 'transparent' });
+        exportCurrentCanvas(
+          `Board-${fields.map((field) => field.text).join('-')}-${selectedTemplate.name}`
+        );
+        resolve();
+      });
     });
+  };
 
-    editor?.canvas.renderAll();
-    const foreground = editor?.canvas.toSVG();
+  const saveForeground = async (original) => {
+    return new Promise((resolve) => {
+      console.log('saving foreground');
+      editor?.canvas.loadFromJSON(original, () => {
+        editor?.canvas.renderAll();
+        editor?.canvas.getObjects().forEach((object) => {
+          if (!object.id.includes('foreground')) return editor?.canvas.remove(object);
+          object.set({ fill: 'green', stroke: 'transparent' });
+        });
 
-    const a = document.createElement('a');
-    a.href = editor?.canvas.toDataURL('image/png');
-    a.download = `foreground-${fields.map((field) => field.text).join('-')}-${
-      selectedTemplate.name
-    }.png`;
-    a.click();
-
-    return foreground;
+        exportCurrentCanvas(
+          `Text-${fields.map((field) => field.text).join('-')}-${selectedTemplate.name}`
+        );
+        resolve();
+      });
+    });
   };
   useEffect(() => {
     const toPng = async () => {
-      console.log('attempting to save');
+      console.log('saving');
       if (!editor?.canvas) return;
-      const a = document.createElement('a');
+      exportCurrentCanvas(
+        `preview-${fields.map((field) => field.text).join('-')}-${selectedTemplate.name}`
+      );
 
-      const originalCanvas = editor?.canvas.toJSON();
-
-      a.href = editor?.canvas.toDataURL('image/png');
-      a.download = `preview-${fields.map((field) => field.text).join('-')}-${
-        selectedTemplate.name
-      }.png`;
-      a.click();
-
-      await saveBackground();
-      await saveForeground();
-
+      const original = editor?.canvas.toJSON([
+        'id',
+        'selectable',
+        'paintFirst',
+        'strokeLineJoin',
+        'strokeLineCap',
+        'fontFamily',
+        'fill',
+        'stroke',
+        'text',
+        'top',
+        'left',
+        'width',
+        'height',
+      ]);
+      await saveForeground(original);
+      await saveBackground(original);
       editor?.canvas.clear();
+      editor?.canvas.loadFromJSON(original, () => editor?.canvas.renderAll());
     };
 
     setSaveSvg(() => toPng);
-  }, [editor?.canvas, setSaveSvg, fields, selectedTemplate]);
+  }, [setSaveSvg, fields, selectedTemplate]);
 
   return (
     <div className="fabricHolder">
