@@ -152,10 +152,11 @@ fabric.Object.prototype.set({
   borderScaleFactor: 6,
   perPixelTargetFind: true,
   padding: 100,
+  strokeWidth: 0,
 });
 
 fabric.Text.prototype.set({
-  shadow: 'rgba(0, 0, 0, 1) -0.2px 0.2px 0.5px',
+  shadow: `rgba(0, 0, 0, 1) -2px 2px 5px`,
 });
 
 const Canvas = ({ setSaveSvg }) => {
