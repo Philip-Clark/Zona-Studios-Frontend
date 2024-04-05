@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import './App.css';
-import './fonts.css';
 import Canvas from './components/Canvas';
 import OptionsPanel from './components/OptionsPanel';
 import { valuesContext } from './contexts';
@@ -15,49 +14,9 @@ function App() {
   const [selectedColor, setSelectedColor] = useState({ id: 100, value: 'white' });
   const [size, setSize] = useState('48x48');
   const [fields, setFields] = useState([]);
-  const [fonts, setFonts] = useState([
-    'Roboto',
-    'Open Sans',
-    'Montserrat',
-    'Lato',
-    'Raleway',
-    'Poppins',
-    'Nunito',
-    'Source Sans Pro',
-    'Oswald',
-    'Ubuntu',
-    'Helvetica',
-    'Times New Roman',
-    'Courier New',
-    'Verdana',
-    'Georgia',
-    'Comic Sans MS',
-    'Trebuchet MS',
-    'Arial Black',
-    'Impact',
-    'Pacifico',
-    'Caveat',
-    'Amatic SC',
-    'Indie Flower',
-    'Great Vibes',
-    'Dancing Script',
-    'Permanent Marker',
-    'Josefin Sans',
-    'Playfair Display',
-    'Quicksand',
-    'Exo',
-    'Baloo',
-    'Comfortaa',
-    'Orbitron',
-    'Press Start 2P',
-    'Chewy',
-    'Faster One',
-    'Luckiest Guy',
-    'Roboto Mono',
-    'Inconsolata',
-  ]);
+  const [fonts, setFonts] = useState(['Lobster-Two', 'Great-Vibes', 'Ribeye-Marrow']);
   const [font, setFont] = useState(fonts[0]);
-  const [saveSvg, setSaveSvg] = useState();
+  const [shouldSave, setShouldSave] = useState(false);
 
   const values = useMemo(
     () => ({
@@ -74,22 +33,23 @@ function App() {
       setSize,
       setFields,
       setFont,
+      shouldSave,
+      setShouldSave,
     }),
-    [selectedTemplate, selectedWood, selectedColor, size, fields, fonts, font]
+    [selectedTemplate, selectedWood, selectedColor, size, fields, fonts, font, shouldSave]
   );
+
+  const handleSaveSvg = async () => {
+    setShouldSave(true);
+  };
 
   return (
     <div className="App">
       <valuesContext.Provider value={values}>
         {/* add use context*/}
         <OptionsPanel />
-        <Canvas setSaveSvg={setSaveSvg} />
-        <button
-          className="saveSvg"
-          onClick={() => {
-            saveSvg();
-          }}
-        >
+        <Canvas />
+        <button className="saveSvg" onClick={handleSaveSvg}>
           Save SVG
         </button>
       </valuesContext.Provider>
