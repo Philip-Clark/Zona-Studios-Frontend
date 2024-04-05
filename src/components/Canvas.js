@@ -3,40 +3,9 @@ import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
 import { useContext, useEffect, useState } from 'react';
 import FontFaceObserver from 'fontfaceobserver';
 import { valuesContext } from '../contexts';
-import TextToSVG from 'text-to-svg';
+import TextToSVG from '../textToSvg';
 import { resolve } from 'path-browserify';
 import removeIntersections from '../removeIntersections';
-
-const addSVGStringToCanvas = (svgString, canvas) => {
-  fabric.loadSVGFromString(svgString, (objects, options) => {
-    const group = new fabric.Group(objects);
-    group.set('center', true);
-    objects.forEach((object) => {
-      object.set({ fill: 'transparent', stroke: 'black' });
-    });
-    canvas.add(group);
-  });
-};
-
-function convertURIToImageData(URI) {
-  return new Promise(function (resolve, reject) {
-    if (URI == null) return reject();
-    var canvas = document.createElement('canvas'),
-      context = canvas.getContext('2d'),
-      image = new Image();
-    image.addEventListener(
-      'load',
-      function () {
-        canvas.width = image.width;
-        canvas.height = image.height;
-        context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        resolve(context.getImageData(0, 0, canvas.width, canvas.height));
-      },
-      false
-    );
-    image.src = URI;
-  });
-}
 
 function applyPattern(url, shape, patternArea, canvas) {
   fabric.Image.fromURL(
@@ -179,26 +148,6 @@ const Canvas = () => {
 
   const loadSVGCallback = (objects, options) => {};
 
-  const getLightingElements = (object, stroke = false) => {
-    const shadowObject = fabric.util.object.clone(object);
-    shadowObject.set('fill', '#000000');
-    shadowObject.set('stroke', stroke ? '#000000' : 'transparent');
-    shadowObject.set('selectable', false);
-    shadowObject.set('id', 'shadow');
-    shadowObject.set('top', object.top + 1);
-    shadowObject.set('left', object.left + 1);
-
-    const highlightObject = fabric.util.object.clone(object);
-    highlightObject.set('fill', '#ffffffff');
-    highlightObject.set('stroke', stroke ? '#ffffff' : 'transparent');
-    highlightObject.set('selectable', false);
-    highlightObject.set('id', 'highlight');
-    highlightObject.set('top', object.top - 1);
-    highlightObject.set('left', object.left - 1);
-
-    return [shadowObject, highlightObject];
-  };
-
   const loadSVGReviver = async (img, object) => {
     //? LOAD FONT
     const fontFace = img.attributes['font-family']?.value;
@@ -300,15 +249,10 @@ const Canvas = () => {
         'height',
       ]);
 
-      console.time('parseForeground');
       await saveForeground(original);
       console.timeEnd('parseForeground');
-      console.time('saveForeground');
 
-      console.log('done');
       editor?.canvas.renderAll();
-
-      console.timeEnd('saveForeground');
 
       // await saveBackground(original);
       // editor?.canvas.clear();
@@ -320,12 +264,9 @@ const Canvas = () => {
   }, [setShouldSave, shouldSave, editor?.canvas]);
 
   const exportCurrentCanvas = (fileName) => {
-    console.log('exporting');
-    console.log({ canvas: editor?.canvas });
     editor?.canvas.renderAll();
     const a = document.createElement('a');
     const svg = editor?.canvas.toSVG({ suppressPreamble: true, encoding: 'utf-8' });
-    console.log(svg);
 
     a.download = `${fileName}.svg`;
     a.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
@@ -370,7 +311,6 @@ const Canvas = () => {
         }
         editor?.canvas.remove(object);
         const fontUrl = process.env.PUBLIC_URL + `/fonts/${object.fontFamily}.ttf`;
-        console.log({ fontUrl });
 
         try {
           const textToSVGInstance = await loadTextToSVG(fontUrl);
@@ -383,7 +323,6 @@ const Canvas = () => {
           const path = textToSVGInstance.getPath(object.text, options);
 
           const nonIntersectingPath = await removeIntersections(path);
-          console.log({ nonIntersectingPath });
 
           const textPath = new fabric.Path(nonIntersectingPath, {
             fill: 'green',
@@ -406,14 +345,12 @@ const Canvas = () => {
           editor?.canvas.renderAll();
           resolve();
         } catch (err) {
-          console.log(err);
           return;
         }
       })
     );
 
     exportCurrentCanvas(`text`);
-    console.log('done');
   };
 
   return (
