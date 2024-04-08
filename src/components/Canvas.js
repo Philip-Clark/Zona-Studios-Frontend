@@ -6,6 +6,7 @@ import { valuesContext } from '../contexts';
 import TextToSVG from '../textToSvg';
 import { resolve } from 'path-browserify';
 import removeIntersections from '../removeIntersections';
+import useOpenTypeJsForText from 'canvas-text-opentypejs-shim';
 
 function applyPattern(url, shape, patternArea, canvas) {
   fabric.Image.fromURL(
@@ -142,6 +143,7 @@ const Canvas = () => {
     fields,
     font,
     fonts,
+    setFont,
     shouldSave,
     setShouldSave,
   } = useContext(valuesContext);
@@ -149,10 +151,6 @@ const Canvas = () => {
   const loadSVGCallback = (objects, options) => {};
 
   const loadSVGReviver = async (img, object) => {
-    //? LOAD FONT
-    const fontFace = img.attributes['font-family']?.value;
-    if (fontFace) await applyFont(fontFace, editor?.canvas, object);
-
     // ? Set object properties
 
     if (object.id.includes('editable')) {
@@ -161,6 +159,18 @@ const Canvas = () => {
     }
 
     if (object.isType('text')) {
+      //? LOAD FONT
+      await applyFont('Lobster Two', editor?.canvas, object);
+      const fontFace = img.attributes['font-family']?.value;
+      console.log({ fontFace });
+      console.log(fonts.includes(fontFace));
+      if (fonts.includes(fontFace)) await applyFont(fontFace, editor?.canvas, object);
+
+      object.on('selected', function () {
+        setFont(object.fontFamily);
+        console.log({ font });
+      });
+
       object.id = 'foreground ' + object.id;
       object.set({ paintFirst: 'stroke', strokeLineJoin: 'round', strokeLineCap: 'round' });
     } else {
@@ -229,9 +239,6 @@ const Canvas = () => {
     if (!shouldSave) return;
     async function saveSVG() {
       if (!editor?.canvas) return;
-      // exportCurrentCanvas(
-      //   `preview-${fields.map((field) => field.text).join('-')}-${selectedTemplate.name}`
-      // );
 
       const original = editor?.canvas.toJSON([
         'id',
@@ -253,11 +260,6 @@ const Canvas = () => {
       console.timeEnd('parseForeground');
 
       editor?.canvas.renderAll();
-
-      // await saveBackground(original);
-      // editor?.canvas.clear();
-      // editor?.canvas.loadFromJSON(original, () => editor?.canvas.renderAll());
-      // editor?.canvas.clear();
     }
     saveSVG();
     setShouldSave(false);
@@ -271,24 +273,6 @@ const Canvas = () => {
     a.download = `${fileName}.svg`;
     a.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
     a.click();
-  };
-
-  const saveBackground = async (original) => {
-    return new Promise((resolve) => {
-      console.log('saving background');
-      editor?.canvas.loadFromJSON(original, () => {
-        editor?.canvas.renderAll();
-        editor?.canvas.getObjects().forEach((object) => {
-          if (!object.id.includes('background')) return editor?.canvas.remove(object);
-          object.set({ fill: 'red', stroke: 'red' });
-        });
-
-        exportCurrentCanvas(
-          `Board-${fields.map((field) => field.text).join('-')}-${selectedTemplate.name}`
-        );
-        resolve();
-      });
-    });
   };
 
   function loadTextToSVG(fontUrl) {
@@ -305,12 +289,13 @@ const Canvas = () => {
 
     await Promise.all(
       objects.map(async (object) => {
-        if (!object.id.includes('foreground')) {
-          editor?.canvas.remove(object);
+        if (object.id.includes('background')) {
+          object.set({ fill: 'blue', stroke: 'blue' });
           return;
         }
+
         editor?.canvas.remove(object);
-        const fontUrl = process.env.PUBLIC_URL + `/fonts/${object.fontFamily}.ttf`;
+        const fontUrl = process.env.PUBLIC_URL + `/fonts/${object.fontFamily.replace(' ', '')}.ttf`;
 
         try {
           const textToSVGInstance = await loadTextToSVG(fontUrl);
@@ -325,7 +310,7 @@ const Canvas = () => {
           const nonIntersectingPath = await removeIntersections(path);
 
           const textPath = new fabric.Path(nonIntersectingPath, {
-            fill: 'green',
+            fill: 'red',
             stroke: 'red',
             strokeWidth: 1,
             top: object.top,
@@ -336,8 +321,6 @@ const Canvas = () => {
             skewY: object.skewY,
             skewX: object.skewX,
             angle: object.angle,
-            width: object.width,
-            height: object.height,
           });
 
           textPath.set({ shadow: 'none', stroke: 'none', fill: 'red' });

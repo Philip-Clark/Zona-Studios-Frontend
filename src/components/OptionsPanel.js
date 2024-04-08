@@ -19,6 +19,7 @@ const OptionsPanel = () => {
     setFields,
     setFont,
     fonts,
+    font,
     selectedColor,
   } = useContext(valuesContext);
 
@@ -82,9 +83,9 @@ const OptionsPanel = () => {
         <select
           className="fonts"
           title="Font"
+          value={font}
           onChange={(e) => {
             setFont(e.target.value);
-            console.log(e.target.value);
           }}
         >
           {fonts.map((font) => {

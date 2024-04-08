@@ -4,6 +4,7 @@ import Canvas from './components/Canvas';
 import OptionsPanel from './components/OptionsPanel';
 import { valuesContext } from './contexts';
 import { useMemo } from 'react';
+import { fontsList } from './definitions/fonts';
 
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState({ id: 0 });
@@ -14,7 +15,7 @@ function App() {
   const [selectedColor, setSelectedColor] = useState({ id: 100, value: 'white' });
   const [size, setSize] = useState('48x48');
   const [fields, setFields] = useState([]);
-  const [fonts, setFonts] = useState(['Lobster-Two', 'Great-Vibes', 'Ribeye-Marrow']);
+  const [fonts, setFonts] = useState(fontsList);
   const [font, setFont] = useState(fonts[0]);
   const [shouldSave, setShouldSave] = useState(false);
 
