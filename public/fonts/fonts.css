@@ -1,0 +1,46 @@
+/* 
+Font's must be in the same directory as this file
+Font's must be in .ttf format
+Font's must be named as the font-family name without spaces
+*/
+
+@font-face {
+  font-family: 'Great Vibes';
+  src: url('GreatVibes.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Lobster Two';
+  src: url('LobsterTwo.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Ribeye Marrow';
+  src: url('RibeyeMarrow.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Sacramento';
+  src: url('Sacramento.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Kanit Regular';
+  src: url('KanitRegular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Kanit Bold';
+  src: url('KanitBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Libre Baskerville';
+  src: url('LibreBaskerville.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto Regular';
+  src: url('RobotoRegular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto Black';
+  src: url('RobotoBlack.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Dancing Script';
+  src: url('DancingScript.ttf') format('truetype');
+}

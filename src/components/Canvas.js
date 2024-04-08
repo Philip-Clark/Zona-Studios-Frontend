@@ -2,39 +2,11 @@ import { fabric } from 'fabric';
 import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
 import { useContext, useEffect, useState } from 'react';
 import FontFaceObserver from 'fontfaceobserver';
-import googleFonts from 'google-fonts';
 import { valuesContext } from '../contexts';
-
-const addSVGStringToCanvas = (svgString, canvas) => {
-  fabric.loadSVGFromString(svgString, (objects, options) => {
-    const group = new fabric.Group(objects);
-    group.set('center', true);
-    objects.forEach((object) => {
-      object.set({ fill: 'transparent', stroke: 'black' });
-    });
-    canvas.add(group);
-  });
-};
-
-function convertURIToImageData(URI) {
-  return new Promise(function (resolve, reject) {
-    if (URI == null) return reject();
-    var canvas = document.createElement('canvas'),
-      context = canvas.getContext('2d'),
-      image = new Image();
-    image.addEventListener(
-      'load',
-      function () {
-        canvas.width = image.width;
-        canvas.height = image.height;
-        context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        resolve(context.getImageData(0, 0, canvas.width, canvas.height));
-      },
-      false
-    );
-    image.src = URI;
-  });
-}
+import TextToSVG from '../textToSvg';
+import { resolve } from 'path-browserify';
+import removeIntersections from '../removeIntersections';
+import useOpenTypeJsForText from 'canvas-text-opentypejs-shim';
 
 function applyPattern(url, shape, patternArea, canvas) {
   fabric.Image.fromURL(
@@ -68,20 +40,21 @@ const loadAndUse = (font, canvas, object) => {
       return true;
     })
     .catch(function (e) {
-      console.log(e);
+      console.log({ e });
       alert('font loading failed ' + font);
       return false;
     });
 };
 
-const loadGoogleFont = async (fontName) => {
-  await googleFonts.add({ [fontName]: true }); // or some other options if you need
-  const fontObserver = new FontFaceObserver(fontName);
-  return fontObserver.load().catch((err) => console.log(`Can't load Font: ${fontName}\n${err}`));
+const loadFonts = async (fonts) => {
+  fonts.forEach(async (font) => {
+    const fontObserver = new FontFaceObserver(font);
+    console.log({ fontObserver });
+    return fontObserver.load().catch((err) => console.log(`Can't load Font: ${font}\n${err}`));
+  });
 };
 
-const loadFontFromURL = async (fontFamily, canvas, object) => {
-  await loadGoogleFont(fontFamily);
+const applyFont = async (fontFamily, canvas, object) => {
   object.set('fontFamily', fontFamily);
   canvas?.requestRenderAll();
 };
@@ -151,53 +124,33 @@ fabric.Object.prototype.set({
   borderColor: '#38373f',
   borderScaleFactor: 6,
   perPixelTargetFind: true,
-  padding: 100,
   strokeWidth: 0,
+  padding: 20,
 });
 
 fabric.Text.prototype.set({
   shadow: `rgba(0, 0, 0, 1) -2px 2px 5px`,
 });
 
-const Canvas = ({ setSaveSvg }) => {
+const Canvas = () => {
   const { editor, onReady } = useFabricJSEditor();
-  const { selectedTemplate, selectedWood, size, selectedColor, setFields, fields, font, fonts } =
-    useContext(valuesContext);
+  const {
+    selectedTemplate,
+    selectedWood,
+    size,
+    selectedColor,
+    setFields,
+    fields,
+    font,
+    fonts,
+    setFont,
+    shouldSave,
+    setShouldSave,
+  } = useContext(valuesContext);
 
   const loadSVGCallback = (objects, options) => {};
 
-  useEffect(() => {
-    console.log('loading fonts', font);
-    fonts.forEach(async (font) => {
-      await loadGoogleFont(font);
-    });
-  }, [fonts]);
-
-  const getLightingElements = (object, stroke = false) => {
-    const shadowObject = fabric.util.object.clone(object);
-    shadowObject.set('fill', '#000000');
-    shadowObject.set('stroke', stroke ? '#000000' : 'transparent');
-    shadowObject.set('selectable', false);
-    shadowObject.set('id', 'shadow');
-    shadowObject.set('top', object.top + 1);
-    shadowObject.set('left', object.left + 1);
-
-    const highlightObject = fabric.util.object.clone(object);
-    highlightObject.set('fill', '#ffffffff');
-    highlightObject.set('stroke', stroke ? '#ffffff' : 'transparent');
-    highlightObject.set('selectable', false);
-    highlightObject.set('id', 'highlight');
-    highlightObject.set('top', object.top - 1);
-    highlightObject.set('left', object.left - 1);
-
-    return [shadowObject, highlightObject];
-  };
-
   const loadSVGReviver = async (img, object) => {
-    //? LOAD FONT
-    const fontFace = img.attributes['font-family']?.value;
-    if (fontFace) await loadFontFromURL(fontFace, editor?.canvas, object);
-
     // ? Set object properties
 
     if (object.id.includes('editable')) {
@@ -206,6 +159,18 @@ const Canvas = ({ setSaveSvg }) => {
     }
 
     if (object.isType('text')) {
+      //? LOAD FONT
+      await applyFont('Lobster Two', editor?.canvas, object);
+      const fontFace = img.attributes['font-family']?.value;
+      console.log({ fontFace });
+      console.log(fonts.includes(fontFace));
+      if (fonts.includes(fontFace)) await applyFont(fontFace, editor?.canvas, object);
+
+      object.on('selected', function () {
+        setFont(object.fontFamily);
+        console.log({ font });
+      });
+
       object.id = 'foreground ' + object.id;
       object.set({ paintFirst: 'stroke', strokeLineJoin: 'round', strokeLineCap: 'round' });
     } else {
@@ -241,6 +206,10 @@ const Canvas = ({ setSaveSvg }) => {
   }, [editor?.canvas, selectedTemplate]);
 
   useEffect(() => {
+    loadFonts(fonts);
+  }, [fonts]);
+
+  useEffect(() => {
     handleWoodChange(selectedWood, editor?.canvas);
     editor?.canvas.renderAll();
   }, [selectedWood, editor?.canvas]);
@@ -266,56 +235,10 @@ const Canvas = ({ setSaveSvg }) => {
     editor?.canvas.renderAll();
   }, [font, editor?.canvas]);
 
-  const exportCurrentCanvas = (fileName) => {
-    editor?.canvas.renderAll();
-    const a = document.createElement('a');
-    a.href = editor?.canvas.toDataURL('image/png');
-    a.download = `${fileName}.png`;
-    a.click();
-  };
-
-  const saveBackground = async (original) => {
-    return new Promise((resolve) => {
-      console.log('saving background');
-      editor?.canvas.loadFromJSON(original, () => {
-        editor?.canvas.renderAll();
-        editor?.canvas.getObjects().forEach((object) => {
-          if (!object.id.includes('background')) return editor?.canvas.remove(object);
-          object.set({ fill: 'red', stroke: 'red' });
-        });
-
-        exportCurrentCanvas(
-          `Board-${fields.map((field) => field.text).join('-')}-${selectedTemplate.name}`
-        );
-        resolve();
-      });
-    });
-  };
-
-  const saveForeground = async (original) => {
-    return new Promise((resolve) => {
-      console.log('saving foreground');
-      editor?.canvas.loadFromJSON(original, () => {
-        editor?.canvas.renderAll();
-        editor?.canvas.getObjects().forEach((object) => {
-          if (!object.id.includes('foreground')) return editor?.canvas.remove(object);
-          object.set({ fill: 'green', stroke: 'transparent' });
-        });
-
-        exportCurrentCanvas(
-          `Text-${fields.map((field) => field.text).join('-')}-${selectedTemplate.name}`
-        );
-        resolve();
-      });
-    });
-  };
   useEffect(() => {
-    const toPng = async () => {
-      console.log('saving');
+    if (!shouldSave) return;
+    async function saveSVG() {
       if (!editor?.canvas) return;
-      exportCurrentCanvas(
-        `preview-${fields.map((field) => field.text).join('-')}-${selectedTemplate.name}`
-      );
 
       const original = editor?.canvas.toJSON([
         'id',
@@ -332,14 +255,86 @@ const Canvas = ({ setSaveSvg }) => {
         'width',
         'height',
       ]);
-      await saveForeground(original);
-      await saveBackground(original);
-      editor?.canvas.clear();
-      editor?.canvas.loadFromJSON(original, () => editor?.canvas.renderAll());
-    };
 
-    setSaveSvg(() => toPng);
-  }, [setSaveSvg, fields, selectedTemplate]);
+      await saveForeground(original);
+      console.timeEnd('parseForeground');
+
+      editor?.canvas.renderAll();
+    }
+    saveSVG();
+    setShouldSave(false);
+  }, [setShouldSave, shouldSave, editor?.canvas]);
+
+  const exportCurrentCanvas = (fileName) => {
+    editor?.canvas.renderAll();
+    const a = document.createElement('a');
+    const svg = editor?.canvas.toSVG({ suppressPreamble: true, encoding: 'utf-8' });
+
+    a.download = `${fileName}.svg`;
+    a.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    a.click();
+  };
+
+  function loadTextToSVG(fontUrl) {
+    return new Promise((resolve, reject) => {
+      TextToSVG.load(fontUrl, (err, textToSVGInstance) => {
+        if (err) reject(err);
+        else resolve(textToSVGInstance);
+      });
+    });
+  }
+
+  const saveForeground = async (original) => {
+    const objects = [...editor?.canvas.getObjects()];
+
+    await Promise.all(
+      objects.map(async (object) => {
+        if (object.id.includes('background')) {
+          object.set({ fill: 'blue', stroke: 'blue' });
+          return;
+        }
+
+        editor?.canvas.remove(object);
+        const fontUrl = process.env.PUBLIC_URL + `/fonts/${object.fontFamily.replace(' ', '')}.ttf`;
+
+        try {
+          const textToSVGInstance = await loadTextToSVG(fontUrl);
+          const options = {
+            fontSize: object.fontSize,
+            scaleX: object.scaleX,
+            scaleY: object.scaleY,
+          };
+
+          const path = textToSVGInstance.getPath(object.text, options);
+
+          const nonIntersectingPath = await removeIntersections(path);
+
+          const textPath = new fabric.Path(nonIntersectingPath, {
+            fill: 'red',
+            stroke: 'red',
+            strokeWidth: 1,
+            top: object.top,
+            left: object.left,
+            padding: object.padding,
+            scaleX: object.scaleX,
+            scaleY: object.scaleY,
+            skewY: object.skewY,
+            skewX: object.skewX,
+            angle: object.angle,
+          });
+
+          textPath.set({ shadow: 'none', stroke: 'none', fill: 'red' });
+          editor?.canvas.add(textPath);
+          editor?.canvas.renderAll();
+          resolve();
+        } catch (err) {
+          return;
+        }
+      })
+    );
+
+    exportCurrentCanvas(`text`);
+  };
 
   return (
     <div className="fabricHolder">
