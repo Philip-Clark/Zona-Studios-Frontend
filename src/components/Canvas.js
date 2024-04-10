@@ -6,7 +6,6 @@ import { valuesContext } from '../contexts';
 import TextToSVG from '../textToSvg';
 import { resolve } from 'path-browserify';
 import removeIntersections from '../removeIntersections';
-import useOpenTypeJsForText from 'canvas-text-opentypejs-shim';
 
 function applyPattern(url, shape, patternArea, canvas) {
   fabric.Image.fromURL(
