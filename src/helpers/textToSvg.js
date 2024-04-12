@@ -8,6 +8,7 @@
  */
 
 import * as opentype from 'opentype.js';
+import removeIntersections from './removeIntersections';
 
 const DEFAULT_FONT = null;
 
@@ -198,3 +199,23 @@ export default class TextToSVG {
     return svg;
   }
 }
+
+function loadTextToSVG(fontUrl) {
+  return new Promise((resolve, reject) => {
+    TextToSVG.load(fontUrl, (err, textToSVGInstance) => {
+      if (err) reject(err);
+      else resolve(textToSVGInstance);
+    });
+  });
+}
+
+const convertTextToPath = async (text, font, options) => {
+  if (!text || !font) return;
+  const fontUrl = process.env.PUBLIC_URL + `/fonts/${font.replace(' ', '')}.ttf`;
+  const textToSVGInstance = await loadTextToSVG(fontUrl);
+  const path = textToSVGInstance.getPath(text, options);
+  const nonIntersectingPath = await removeIntersections(path);
+  return nonIntersectingPath;
+};
+
+export { loadTextToSVG, convertTextToPath };

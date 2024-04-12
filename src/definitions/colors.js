@@ -1,162 +1,162 @@
 export const colors = [
   {
     id: 107,
-    value: 'hsl(0, 0%, 100%)',
+    value: '#ffffff',
   },
   {
     id: 100,
-    value: 'hsl(0, 0%, 12%)',
+    value: '#1f1f1f',
   },
   {
     id: 101,
-    value: 'hsl(180, 100%, 18%)',
+    value: '#005c5c',
   },
   {
     id: 102,
-    value: 'hsl(210, 0%, 34%)',
+    value: '#575757',
   },
   {
     id: 103,
-    value: 'hsl(340, 13%, 32%)',
+    value: '#5c474e',
   },
   {
     id: 104,
-    value: 'hsl(278, 25%, 69%)',
+    value: '#b59cc4',
   },
   {
     id: 105,
-    value: 'hsl(210, 15%, 61%)',
+    value: '#8d9caa',
   },
   {
     id: 106,
-    value: 'hsl(120, 25%, 62%)',
+    value: '#86b686',
   },
   {
     id: 129,
-    value: 'hsl(0, 0%, 75%)',
+    value: '#bfbfbf',
   },
   {
     id: 110,
-    value: 'hsl(330, 100%, 64%)',
+    value: '#ff47a3',
   },
   {
     id: 111,
-    value: 'hsl(180, 100%, 50%)',
+    value: '#00ffff',
   },
   {
     id: 112,
-    value: 'hsl(16, 100%, 50%)',
+    value: '#ff4400',
   },
   {
     id: 113,
-    value: 'hsl(300, 100%, 25%)',
+    value: '#800080',
   },
   {
     id: 114,
-    value: 'hsl(32, 100%, 50%)',
+    value: '#ff8800',
   },
   {
     id: 115,
-    value: 'hsl(120, 100%, 50%)',
+    value: '#00ff00',
   },
   {
     id: 116,
-    value: 'hsl(330, 100%, 54%)',
+    value: '#ff148a',
   },
   {
     id: 117,
-    value: 'hsl(200, 100%, 50%)',
+    value: '#00aaff',
   },
   {
     id: 118,
-    value: 'hsl(16, 100%, 63%)',
+    value: '#ff7542',
   },
   {
     id: 119,
-    value: 'hsl(271, 53%, 47%)',
+    value: '#7a38b7',
   },
   {
     id: 120,
-    value: 'hsl(90, 100%, 50%)',
+    value: '#80ff00',
   },
   {
     id: 121,
-    value: 'hsl(280, 61%, 41%)',
+    value: '#7e29a8',
   },
   {
     id: 122,
-    value: 'hsl(300, 100%, 50%)',
+    value: '#ff00ff',
   },
   {
     id: 123,
-    value: 'hsl(180, 60%, 43%)',
+    value: '#2cafaf',
   },
   {
     id: 124,
-    value: 'hsl(39, 100%, 50%)',
+    value: '#ffa600',
   },
   {
     id: 125,
-    value: 'hsl(0, 100%, 27%)',
+    value: '#8a0000',
   },
   {
     id: 126,
-    value: 'hsl(120, 100%, 50%)',
+    value: '#00ff00',
   },
   {
     id: 127,
-    value: 'hsl(275, 100%, 20%)',
+    value: '#3b0066',
   },
   {
     id: 128,
-    value: 'hsl(0, 100%, 50%)',
+    value: '#ff0000',
   },
   {
     id: 108,
-    value: 'hsl(50, 100%, 50%)',
+    value: '#ffd500',
   },
   {
     id: 109,
-    value: 'hsl(50, 100%, 50%)',
+    value: '#ffd500',
   },
   {
     id: 130,
-    value: 'hsl(0, 79%, 72%)',
+    value: '#f07f7f',
   },
   {
     id: 131,
-    value: 'hsl(33, 100%, 86%)',
+    value: '#ffdfb8',
   },
   {
     id: 132,
-    value: 'hsl(270, 67%, 93%)',
+    value: '#ede1f9',
   },
   {
     id: 133,
-    value: 'hsl(17, 100%, 71%)',
+    value: '#ff956b',
   },
   {
     id: 134,
-    value: 'hsl(302, 47%, 80%)',
+    value: '#e4b4e2',
   },
   {
     id: 135,
-    value: 'hsl(350, 100%, 88%)',
+    value: '#ffc2cc',
   },
   {
     id: 136,
-    value: 'hsl(220, 28%, 78%)',
+    value: '#b7c2d7',
   },
   {
     id: 137,
-    value: 'hsl(351, 100%, 76%)',
+    value: '#ff8597',
   },
   {
     id: 138,
-    value: 'hsl(28, 100%, 86%)',
+    value: '#ffd9b8',
   },
   {
     id: 139,
-    value: 'hsl(54, 77%, 75%)',
+    value: '#f0e78e',
   },
 ];

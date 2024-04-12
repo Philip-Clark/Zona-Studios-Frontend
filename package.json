@@ -30,6 +30,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-scripts": "5.0.1",
+    "svg-path-outline": "^1.0.1",
     "svg-smoother": "^2.1.0",
     "svgexport": "^0.4.2",
     "text-to-svg": "^3.1.5",
