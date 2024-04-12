@@ -49,6 +49,7 @@ const saveBackground = (canvas) => {
 const saveCanvas = async (canvas) => {
   saveForeground(canvas);
   saveBackground(canvas);
+  canvas.clear();
 };
 
 export { exportCurrentCanvas, saveCanvas };
