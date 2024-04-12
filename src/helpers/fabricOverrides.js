@@ -21,4 +21,8 @@ fabric.Text.prototype.set({
   shadow: `rgba(0, 0, 0, 1) -2px 2px 5px`,
 });
 
+fabric.Canvas.prototype.set({
+  selectable: false,
+});
+
 export default fabric;

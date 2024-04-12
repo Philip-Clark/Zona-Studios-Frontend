@@ -3,7 +3,7 @@ import { loadAndUseFont } from './fontLoader';
 import { convertTextToPath } from './textToSvg';
 import { fabric } from 'fabric';
 
-function applyPattern(url, shape, patternArea, canvas) {
+function applyPattern(url, shape, canvas) {
   fabric.Image.fromURL(
     url,
     function (img) {
@@ -13,7 +13,8 @@ function applyPattern(url, shape, patternArea, canvas) {
           repeat: 'repeat',
         },
         (pattern) => {
-          shape.set(patternArea, pattern);
+          shape.set('stroke', pattern);
+          shape.set('fill', pattern);
           canvas.renderAll();
         }
       );
@@ -25,29 +26,30 @@ function applyPattern(url, shape, patternArea, canvas) {
 }
 
 const applyFont = async (fontFamily, canvas, object) => {
-  object.set('fontFamily', fontFamily);
+  const children = object._objects;
+  children.forEach((child) => {
+    child.set('fontFamily', fontFamily);
+  });
   canvas?.requestRenderAll();
 };
 
 const handleColorChange = (color, canvas) => {
-  console.log(color);
   const objectsActive =
     canvas?.getActiveObjects() === undefined || canvas?.getActiveObjects().length > 0;
-  console.log(objectsActive);
 
   const objectsToPaint = objectsActive ? canvas?.getActiveObjects() : canvas?._objects;
-  console.log(objectsToPaint);
-
+  console.log({ objectsToPaint });
   objectsToPaint?.forEach((object) => {
     if (object.id.includes('background')) return;
+
     object.set('fill', color.value);
   });
 };
 
 const handleTextChange = (text, id, canvas) => {
   canvas?._objects.forEach(async (object) => {
-    console.log(object.id);
-    if (!object.id.includes(id)) return;
+    const pureId = id.replace('foreground', '').replaceAll('  ', '');
+    if (!object.id.includes(pureId)) return;
     object.set({ text: text });
     canvas?.renderAll();
     if (object.width * object.scaleX > canvas?.width / 4) object.scaleToWidth(canvas?.width);
@@ -56,8 +58,13 @@ const handleTextChange = (text, id, canvas) => {
 };
 
 const handleFontChange = (font, canvas) => {
-  canvas?.getActiveObjects().map(async (object) => {
-    object.set({ fontFamily: font });
+  const object = canvas?.getActiveObject();
+  if (!object) return;
+  object.set('fontFamily', font);
+  canvas?._objects.forEach((obj) => {
+    if (obj.id.includes(object.id.replace('foreground', ''))) {
+      obj.set('fontFamily', font);
+    }
   });
 };
 
@@ -70,8 +77,7 @@ const handleSizeChange = (size, canvas) => {
 
 const handleWoodChange = (wood, canvas) => {
   canvas?._objects.forEach((object) => {
-    if (!object.id.includes('background')) return;
-    applyPattern(wood.url, object, 'fill', canvas);
+    if (object.id.includes('background')) applyPattern(wood.url, object, canvas);
   });
 };
 

@@ -37,9 +37,8 @@ const Canvas = () => {
   }, [fonts]);
   useEffect(() => {
     handleWoodChange(selectedWood, editor?.canvas);
-  }, [selectedWood, editor]);
+  }, [selectedWood, editor, fields]);
   useEffect(() => {
-    console.log(selectedColor);
     handleColorChange(selectedColor, editor?.canvas);
   }, [selectedColor, editor]);
 
@@ -75,6 +74,7 @@ const Canvas = () => {
     editor?.canvas.clear();
     editor?.canvas.setZoom(4);
     editor?.canvas.set('targetFindTolerance', 20);
+    editor?.canvas.set('selection', false);
   }, [editor]);
 
   useEffect(() => {
@@ -87,7 +87,11 @@ const Canvas = () => {
         setFields([]);
         setFields(
           editable.map((object) => ({
-            id: object.id.replace('editable ', '').replace('text ', ''),
+            id: object.id
+              .replace('editable', '')
+              .replace('text', '')
+              .replace('cutout', ' ')
+              .replace('foreground', ''),
             text: object.text,
           }))
         );
@@ -99,13 +103,13 @@ const Canvas = () => {
     );
   }, [selectedTemplate, editor, setFields, fonts]);
 
-  const activeObjects = editor?.canvas.getActiveObjects();
-  useEffect(() => {
-    if (!activeObjects) return;
-    if (activeObjects.length !== 1) return;
-    setFont(activeObjects[0].fontFamily);
-    setSelectedColor(colors.find((color) => color.value === activeObjects[0].fill));
-  }, [activeObjects, editor?.canvas]);
+  // const activeObjects = editor?.canvas.getActiveObjects();
+  // useEffect(() => {
+  //   if (!activeObjects) return;
+  //   if (activeObjects.length !== 1) return;
+  //   setFont(activeObjects[0].fontFamily);
+  //   setSelectedColor(colors.find((color) => color.value === activeObjects[0].fill));
+  // }, [activeObjects, editor?.canvas]);
 
   return (
     <div className="fabricHolder">
