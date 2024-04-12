@@ -30,10 +30,13 @@ const applyFont = async (fontFamily, canvas, object) => {
 };
 
 const handleColorChange = (color, canvas) => {
+  console.log(color);
   const objectsActive =
     canvas?.getActiveObjects() === undefined || canvas?.getActiveObjects().length > 0;
+  console.log(objectsActive);
 
   const objectsToPaint = objectsActive ? canvas?.getActiveObjects() : canvas?._objects;
+  console.log(objectsToPaint);
 
   objectsToPaint?.forEach((object) => {
     if (object.id.includes('background')) return;
@@ -43,6 +46,7 @@ const handleColorChange = (color, canvas) => {
 
 const handleTextChange = (text, id, canvas) => {
   canvas?._objects.forEach(async (object) => {
+    console.log(object.id);
     if (!object.id.includes(id)) return;
     object.set({ text: text });
     canvas?.renderAll();

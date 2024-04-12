@@ -103,7 +103,7 @@ const OptionsPanel = () => {
               <button
                 key={color.id}
                 className="color"
-                data-selected={selectedColor.id === color.id ? true : false}
+                data-selected={selectedColor?.id === color.id ? true : false}
                 onClick={() => {
                   setSelectedColor(color);
                 }}

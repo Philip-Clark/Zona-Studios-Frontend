@@ -12,7 +12,7 @@ function App() {
     id: 0,
     url: 'https://th.bing.com/th/id/OIP.xCvGaX_HDOIVyGtBmUg44QHaFj?pid=ImgDet&rs=1',
   });
-  const [selectedColor, setSelectedColor] = useState({ id: 100, value: 'white' });
+  const [selectedColor, setSelectedColor] = useState({ id: 100, value: '#ffffff' });
   const [size, setSize] = useState('48x48');
   const [fields, setFields] = useState([]);
   const [fonts, setFonts] = useState(fontsList);

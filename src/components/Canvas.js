@@ -39,11 +39,14 @@ const Canvas = () => {
     handleWoodChange(selectedWood, editor?.canvas);
   }, [selectedWood, editor]);
   useEffect(() => {
+    console.log(selectedColor);
     handleColorChange(selectedColor, editor?.canvas);
   }, [selectedColor, editor]);
+
   useEffect(() => {
     fields.forEach((field) => handleTextChange(field.text, field.id, editor?.canvas));
   }, [fields, editor]);
+
   useEffect(() => {
     handleSizeChange(size, editor?.canvas);
   }, [size, editor]);
@@ -67,32 +70,42 @@ const Canvas = () => {
   }, [editor, fields, selectedWood, selectedColor, size, font, shouldSave]);
 
   useEffect(() => {
-    setFields([]);
     editor?.canvas.setHeight('1600');
     editor?.canvas.setWidth('1600');
     editor?.canvas.clear();
     editor?.canvas.setZoom(4);
     editor?.canvas.set('targetFindTolerance', 20);
-  }, [editor, setFields]);
+  }, [editor]);
 
   useEffect(() => {
     editor?.canvas.clear();
     fabric.loadSVGFromURL(
       process.env.PUBLIC_URL + `/templates/${selectedTemplate.path}`,
-      () => {},
+      (objects) => {
+        if (!objects) return;
+        const editable = objects.filter((object) => object.id.includes('editable'));
+        setFields([]);
+        setFields(
+          editable.map((object) => ({
+            id: object.id.replace('editable ', '').replace('text ', ''),
+            text: object.text,
+          }))
+        );
+      },
 
       (source, object) => {
         fabricSVGReviver(object, editor?.canvas, fonts);
       }
     );
-  }, [selectedTemplate, editor]);
+  }, [selectedTemplate, editor, setFields, fonts]);
 
-  const activeObject = editor?.canvas.getActiveObject();
+  const activeObjects = editor?.canvas.getActiveObjects();
   useEffect(() => {
-    if (!activeObject) return;
-    setFont(activeObject?.fontFamily);
-    setSelectedColor(colors.find((color) => color.value === activeObject?.fill));
-  }, [activeObject, editor?.canvas]);
+    if (!activeObjects) return;
+    if (activeObjects.length !== 1) return;
+    setFont(activeObjects[0].fontFamily);
+    setSelectedColor(colors.find((color) => color.value === activeObjects[0].fill));
+  }, [activeObjects, editor?.canvas]);
 
   return (
     <div className="fabricHolder">

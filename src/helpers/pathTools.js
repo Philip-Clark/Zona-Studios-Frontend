@@ -11,4 +11,12 @@ const unitePaths = (paths) => {
   });
 };
 
-export default unitePaths;
+const smoothImage = (svgString) => {
+  paper.setup(new paper.Size(1600, 1600));
+  paper.project.importSVG(svgString);
+
+  const paths = paper.project.getItems({ class: paper.Path });
+  return paper.project.exportSVG({ asString: true });
+};
+
+export { unitePaths, smoothImage };

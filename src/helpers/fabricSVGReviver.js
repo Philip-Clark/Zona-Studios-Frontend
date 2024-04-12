@@ -10,7 +10,6 @@ const reviveNonText = (object, canvas) => {
 const reviveText = async (object, canvas, fonts, setFont) => {
   if (!fonts.includes(object.fontFamily)) object.fontFamily = 'Roboto Regular';
   object.set({ id: object.id + ' text', selectable: true, fill: '#ffffff', paintFirst: 'stroke' });
-
   canvas.remove(object);
   canvas.add(object);
 };
