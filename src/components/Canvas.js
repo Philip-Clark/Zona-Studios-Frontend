@@ -14,6 +14,7 @@ import { saveCanvas } from '../helpers/canvasExporter';
 import fabric from '../helpers/fabricOverrides';
 import { woods } from '../definitions/woods';
 import { colors } from '../definitions/colors';
+import { resolveTspans } from '../helpers/svgPreimportTools';
 const Canvas = () => {
   const { editor, onReady } = useFabricJSEditor();
   const {
@@ -78,29 +79,39 @@ const Canvas = () => {
   }, [editor]);
 
   useEffect(() => {
-    editor?.canvas.clear();
-    fabric.loadSVGFromURL(
-      process.env.PUBLIC_URL + `/templates/${selectedTemplate.path}`,
-      (objects) => {
-        if (!objects) return;
-        const editable = objects.filter((object) => object.id.includes('editable'));
-        setFields([]);
-        setFields(
-          editable.map((object) => ({
-            id: object.id
-              .replace('editable', '')
-              .replace('text', '')
-              .replace('cutout', ' ')
-              .replace('foreground', ''),
-            text: object.text,
-          }))
-        );
-      },
+    (async () => {
+      editor?.canvas.clear();
+      let svgString = await fetch(
+        process.env.PUBLIC_URL + `/templates/${selectedTemplate.path}`
+      ).then((res) => {
+        return res.text();
+      });
 
-      (source, object) => {
-        fabricSVGReviver(object, editor?.canvas, fonts);
-      }
-    );
+      console.log(svgString);
+      svgString = resolveTspans(svgString);
+      fabric.loadSVGFromString(
+        svgString,
+        (objects) => {
+          if (!objects) return;
+          const editable = objects.filter((object) => object.id.includes('editable'));
+          setFields([]);
+          setFields(
+            editable.map((object) => ({
+              id: object.id
+                .replace('editable', '')
+                .replace('text', '')
+                .replace('cutout', ' ')
+                .replace('foreground', ''),
+              text: object.text,
+            }))
+          );
+        },
+
+        (source, object) => {
+          fabricSVGReviver(object, editor?.canvas, fonts);
+        }
+      );
+    })();
   }, [selectedTemplate, editor, setFields, fonts]);
 
   // const activeObjects = editor?.canvas.getActiveObjects();
