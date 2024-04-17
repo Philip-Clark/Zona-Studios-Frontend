@@ -10,7 +10,6 @@ const exportCurrentCanvas = async (fileName, canvas) => {
     (svgString) => {
       const a = document.createElement('a');
       a.href = `data:image/svg+xml,${encodeURIComponent(svgString)}`;
-      console.log(a.href);
       a.download = `${fileName}.svg`;
       a.click();
     },

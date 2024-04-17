@@ -73,9 +73,8 @@ export function BuyWithShopify() {
   }, []);
 
   return (
-    <div className="Shopify">
-      <p>{data?.shop.name}</p>
-      <button onClick={handlePurchase}>Buy through {data?.shop.name}</button>
-    </div>
+    <button className="Shopify" onClick={handlePurchase}>
+      Buy Now
+    </button>
   );
 }
