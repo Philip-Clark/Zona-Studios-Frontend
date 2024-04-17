@@ -5,6 +5,7 @@ import OptionsPanel from './components/OptionsPanel';
 import { valuesContext } from './contexts';
 import { useMemo } from 'react';
 import { fontsList } from './definitions/fonts';
+import { BuyWithShopify } from './components/BuyWithShopify';
 
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState({ id: 0 });
@@ -53,6 +54,7 @@ function App() {
         <button className="saveSvg" onClick={handleSaveSvg}>
           Save SVG
         </button>
+        <BuyWithShopify />
       </valuesContext.Provider>
     </div>
   );
