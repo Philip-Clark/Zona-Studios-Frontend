@@ -1,6 +1,6 @@
 export const templates = [
   { id: 1, name: 'Circular Full Name', path: 'CircularFullName.svg' },
-  { id: 2, name: 'Family Sign', path: 'Family Cutout sign.svg' },
+  { id: 2, name: 'Family Sign', path: 'FamilyCutoutsign.svg' },
   { id: 3, name: 'Circular Home', path: 'CircularHouse.svg' },
   { id: 4, name: '--', path: '' },
   { id: 5, name: '--', path: '' },
