@@ -29,11 +29,11 @@ export default function Templates() {
       <button
         className="moreTemplatesButton"
         onClick={() => {
-          if (templateCount === -1) setTemplateCount(6);
-          else setTemplateCount(-1);
+          if (templateCount === templates.length) setTemplateCount(3);
+          else setTemplateCount(templates.length);
         }}
       >
-        {templateCount === -1 ? 'Less Templates' : 'More Templates'}
+        {templateCount === templates.length ? 'Less Templates' : 'More Templates'}
       </button>
     </div>
   );

@@ -29,6 +29,8 @@ const Canvas = () => {
     setFont,
     setSelectedColor,
     setSelectedWood,
+    canvas,
+    setCanvas,
     shouldSave,
     setShouldSave,
   } = useContext(valuesContext);
@@ -76,6 +78,7 @@ const Canvas = () => {
     editor?.canvas.setZoom(4);
     editor?.canvas.set('targetFindTolerance', 20);
     editor?.canvas.set('selection', false);
+    setCanvas(editor?.canvas);
   }, [editor]);
 
   useEffect(() => {

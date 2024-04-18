@@ -5,23 +5,26 @@ const exportCurrentCanvas = async (fileName, canvas) => {
   canvas.renderAll();
   const canvasDataUrl = canvas.toDataURL({ format: 'png', quality: 0.1 });
 
-  ImageTracer.imageToSVG(
-    canvasDataUrl,
-    (svgString) => {
-      const a = document.createElement('a');
-      a.href = `data:image/svg+xml,${encodeURIComponent(svgString)}`;
-      a.download = `${fileName}.svg`;
-      a.click();
-    },
-    {
-      ltres: 1.5,
-      qtres: 1.5,
-      rightangleenhance: true,
-      numberofcolors: 2,
-      scale: 1,
-      strokewidth: 0,
-    }
-  );
+  return new Promise((resolve, reject) => {
+    ImageTracer.imageToSVG(
+      canvasDataUrl,
+      (svgString) => {
+        // const a = document.createElement('a');
+        // a.href = `data:image/svg+xml,${encodeURIComponent(svgString)}`;
+        // a.download = `${fileName}.svg`;
+        // a.click();
+        resolve(svgString);
+      },
+      {
+        ltres: 1.5,
+        qtres: 1.5,
+        rightangleenhance: true,
+        numberofcolors: 2,
+        scale: 1,
+        strokewidth: 0,
+      }
+    );
+  });
 };
 
 const saveForeground = (canvas) => {
@@ -33,7 +36,7 @@ const saveForeground = (canvas) => {
     object.set({ shadow: 'none', stroke: 'transparent', fill: 'red' });
     canvas.renderAll();
   });
-  exportCurrentCanvas(`foreground`, canvas);
+  return exportCurrentCanvas(`foreground`, canvas);
 };
 
 const saveBackground = (canvas) => {
@@ -43,13 +46,14 @@ const saveBackground = (canvas) => {
     object.set({ shadow: 'none', stroke: 'blue', fill: 'blue' });
     canvas.renderAll();
   });
-  exportCurrentCanvas(`background`, canvas);
+  return exportCurrentCanvas(`background`, canvas);
 };
 
 const saveCanvas = async (canvas) => {
-  saveForeground(canvas);
-  saveBackground(canvas);
+  const foregroundString = await saveForeground(canvas);
+  const backgroundString = await saveBackground(canvas);
   canvas.clear();
+  return { foregroundString, backgroundString };
 };
 
 export { exportCurrentCanvas, saveCanvas };

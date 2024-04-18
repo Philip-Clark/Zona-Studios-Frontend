@@ -5,6 +5,7 @@ import OptionsPanel from './components/OptionsPanel';
 import { valuesContext } from './contexts';
 import { useMemo } from 'react';
 import { fontsList } from './definitions/fonts';
+import { BuyWithShopify } from './components/BuyWithShopify';
 
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState({ id: 0 });
@@ -18,6 +19,7 @@ function App() {
   const [fonts, setFonts] = useState(fontsList);
   const [font, setFont] = useState(fonts[0]);
   const [shouldSave, setShouldSave] = useState(false);
+  const [canvas, setCanvas] = useState(null);
 
   const values = useMemo(
     () => ({
@@ -35,6 +37,8 @@ function App() {
       setFields,
       setFont,
       shouldSave,
+      canvas,
+      setCanvas,
       setShouldSave,
     }),
     [selectedTemplate, selectedWood, selectedColor, size, fields, fonts, font, shouldSave]
@@ -53,6 +57,7 @@ function App() {
         <button className="saveSvg" onClick={handleSaveSvg}>
           Save SVG
         </button>
+        <BuyWithShopify />
       </valuesContext.Provider>
     </div>
   );
