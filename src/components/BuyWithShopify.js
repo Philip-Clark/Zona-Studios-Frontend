@@ -5,9 +5,7 @@ import { valuesContext } from '../contexts';
 const apiURL = 'http://localhost:3333';
 
 const uploadImage = async (canvas) => {
-  console.log(canvas);
   const { foregroundString, backgroundString } = await saveCanvas(canvas);
-  console.log(foregroundString, backgroundString);
 
   const { foregroundResponse, backgroundResponse } = await fetch(`${apiURL}/api/image`, {
     method: 'POST',
@@ -17,14 +15,12 @@ const uploadImage = async (canvas) => {
     },
   }).then((res) => res.json());
 
-  console.log({ feURL: foregroundResponse.url, beURL: backgroundResponse.url });
   return { foregroundUrl: foregroundResponse.url, backgroundUrl: backgroundResponse.url };
 };
 
 const createCart = async (canvas, urls) => {
   const { foregroundUrl, backgroundUrl } = urls;
   const { foregroundString } = await saveCanvas(canvas);
-  console.log(foregroundString);
   const { data, extensions, message } = await fetch(`${apiURL}/api/checkout`, {
     method: 'POST',
     body: JSON.stringify({ foregroundUrl, backgroundUrl }),
