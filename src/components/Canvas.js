@@ -82,15 +82,17 @@ const Canvas = () => {
   }, [editor]);
 
   useEffect(() => {
+    editor?.canvas.setHeight('400');
+    editor?.canvas.setWidth('400');
+    editor?.canvas.clear();
+    editor?.canvas.setZoom(1);
     (async () => {
-      editor?.canvas.clear();
       let svgString = await fetch(
         process.env.PUBLIC_URL + `/templates/${selectedTemplate.path}`
       ).then((res) => {
         return res.text();
       });
 
-      console.log(svgString);
       svgString = resolveTspans(svgString);
       fabric.loadSVGFromString(
         svgString,

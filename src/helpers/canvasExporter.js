@@ -1,30 +1,22 @@
 import ImageTracer from 'imagetracerjs';
 import { smoothImage } from './pathTools';
+import { potrace, init } from 'esm-potrace-wasm';
 
 const exportCurrentCanvas = async (fileName, canvas) => {
-  canvas.renderAll();
-  const canvasDataUrl = canvas.toDataURL({ format: 'png', quality: 0.1 });
+  await init();
 
-  return new Promise((resolve, reject) => {
-    ImageTracer.imageToSVG(
-      canvasDataUrl,
-      (svgString) => {
-        // const a = document.createElement('a');
-        // a.href = `data:image/svg+xml,${encodeURIComponent(svgString)}`;
-        // a.download = `${fileName}.svg`;
-        // a.click();
-        resolve(svgString);
-      },
-      {
-        ltres: 1.5,
-        qtres: 1.5,
-        rightangleenhance: true,
-        numberofcolors: 2,
-        scale: 1,
-        strokewidth: 0,
-      }
-    );
+  canvas.renderAll();
+  const context = canvas.getContext('2d');
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const svgString = await potrace(imageData, {
+    turdsize: 10,
+    turnpolicy: 'majority',
+    optcurve: true,
+    opttolerance: 1,
+    svg: true,
   });
+  const cleanedSVG = svgString.match(/<svg.*<\/svg>/s)[0];
+  return cleanedSVG;
 };
 
 const saveForeground = (canvas) => {
@@ -50,8 +42,12 @@ const saveBackground = (canvas) => {
 };
 
 const saveCanvas = async (canvas) => {
-  const foregroundString = await saveForeground(canvas);
+  canvas.setHeight(`${400 * 2}`);
+  canvas.setWidth(`${400 * 2}`);
+  canvas.setZoom(1);
+  canvas.renderAll();
   const backgroundString = await saveBackground(canvas);
+  const foregroundString = await saveForeground(canvas);
   canvas.clear();
   return { foregroundString, backgroundString };
 };
