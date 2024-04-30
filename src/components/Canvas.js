@@ -72,10 +72,10 @@ const Canvas = () => {
   }, [editor, fields, selectedWood, selectedColor, size, font, shouldSave]);
 
   useEffect(() => {
-    editor?.canvas.setHeight('1600');
-    editor?.canvas.setWidth('1600');
+    editor?.canvas.setHeight('400');
+    editor?.canvas.setWidth('400');
     editor?.canvas.clear();
-    editor?.canvas.setZoom(4);
+    editor?.canvas.setZoom(1);
     editor?.canvas.set('targetFindTolerance', 20);
     editor?.canvas.set('selection', false);
     setCanvas(editor?.canvas);

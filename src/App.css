@@ -15,18 +15,17 @@
   align-content: center;
   justify-content: center;
   align-items: center;
+  max-width: 70%;
 }
 .editor {
   /* margin: auto; */
   text-align: right;
   width: fit-content;
   transition: transform 0.5s ease-in-out;
-  /* border: dashed rgb(255, 255, 255) 8px; */
 
-  transform: scale(0.25);
+  /* transform: scale(0.25); */
 }
 .exporter {
-  /* margin: auto; */
   text-align: right;
   width: fit-content;
   transition: transform 0.5s ease-in-out;
@@ -49,3 +48,19 @@
 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+
+.desktop-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  width: 100%;
+}
+
+/* 
+media queries */
+/* @media (max-width: 800px) {
+  .desktop-container {
+    display: none;
+  }
+} */
