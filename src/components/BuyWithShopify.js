@@ -1,33 +1,29 @@
 import React, { useContext } from 'react';
 import { saveCanvas } from '../helpers/canvasExporter';
 import { valuesContext } from '../contexts';
+import combineSVGStrings from '../helpers/combineSVGStrings';
 
 const apiURL = 'http://localhost:3333';
 
-const uploadImage = async (canvas) => {
-  console.log(canvas);
+const uploadImage = async (canvas, filename) => {
   const { foregroundString, backgroundString } = await saveCanvas(canvas);
-  console.log(foregroundString, backgroundString);
+  const combinedSVG = combineSVGStrings(backgroundString, foregroundString);
 
-  const { foregroundResponse, backgroundResponse } = await fetch(`${apiURL}/api/image`, {
+  const response = await fetch(`${apiURL}/api/image`, {
     method: 'POST',
-    body: JSON.stringify({ foregroundString, backgroundString }),
+    body: JSON.stringify({ combinedSVG, filename }),
     headers: {
       'Content-Type': 'application/json',
     },
   }).then((res) => res.json());
 
-  console.log({ feURL: foregroundResponse.url, beURL: backgroundResponse.url });
-  return { foregroundUrl: foregroundResponse.url, backgroundUrl: backgroundResponse.url };
+  return { url: response.url };
 };
 
-const createCart = async (canvas, urls) => {
-  const { foregroundUrl, backgroundUrl } = urls;
-  const { foregroundString } = await saveCanvas(canvas);
-  console.log(foregroundString);
+const createCart = async (canvas, url) => {
   const { data, extensions, message } = await fetch(`${apiURL}/api/checkout`, {
     method: 'POST',
-    body: JSON.stringify({ foregroundUrl, backgroundUrl }),
+    body: JSON.stringify({ url }),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -37,11 +33,11 @@ const createCart = async (canvas, urls) => {
 };
 
 export function BuyWithShopify() {
-  const { canvas } = useContext(valuesContext);
+  const { canvas, filename } = useContext(valuesContext);
 
   const handlePurchase = async () => {
-    const urls = await uploadImage(canvas);
-    const cart = await createCart(canvas, urls);
+    const { url } = await uploadImage(canvas, filename);
+    const cart = await createCart(canvas, url);
     if (!cart) console.log('Error creating cart');
     window.location.href = cart.checkoutUrl;
   };

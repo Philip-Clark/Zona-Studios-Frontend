@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Canvas from './components/Canvas';
 import OptionsPanel from './components/OptionsPanel';
@@ -20,6 +20,13 @@ function App() {
   const [font, setFont] = useState(fonts[0]);
   const [shouldSave, setShouldSave] = useState(false);
   const [canvas, setCanvas] = useState(null);
+  const [filename, setFilename] = useState('CustomSign');
+
+  useEffect(() => {
+    let fileNameIdentifiers = [fields.map((field) => field.text)];
+    fileNameIdentifiers.push(selectedTemplate.name);
+    setFilename(fileNameIdentifiers.join('_'));
+  }, [fields, selectedTemplate]);
 
   const values = useMemo(
     () => ({
@@ -40,6 +47,8 @@ function App() {
       canvas,
       setCanvas,
       setShouldSave,
+      filename,
+      setFilename,
     }),
     [selectedTemplate, selectedWood, selectedColor, size, fields, fonts, font, shouldSave]
   );
