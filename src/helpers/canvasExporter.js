@@ -49,7 +49,7 @@ const saveCanvas = async (canvas) => {
   canvas.setHeight(`${400 * zoom}`);
   canvas.setWidth(`${400 * zoom}`);
   canvas.setZoom(zoom);
-  canvas.renderAll();
+  canvas.discardActiveObject().renderAll();
   const backgroundString = await saveBackground(canvas);
   const foregroundString = await saveForeground(canvas);
 
