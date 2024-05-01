@@ -13,18 +13,16 @@
 .fabricHolder {
   flex: 1;
   display: flex;
-  align-content: center;
   justify-content: center;
   align-items: center;
   max-width: 70%;
+  height: 70%;
 }
 .editor {
   /* margin: auto; */
   text-align: right;
   width: fit-content;
   transition: transform 0.5s ease-in-out;
-
-  /* transform: scale(0.25); */
 }
 .exporter {
   text-align: right;
@@ -53,9 +51,9 @@
 .desktop-container {
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: left;
   width: 100%;
+  align-items: start;
 }
 
 /* 

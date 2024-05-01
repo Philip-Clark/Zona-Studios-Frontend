@@ -1,7 +1,7 @@
 .optionsPanel {
   z-index: 100;
   max-width: min-content;
-  background: #dfdfdf;
+  background: #dfdfdfb6;
   border-radius: 30px;
   box-shadow: 5px 5px 20px 1px rgba(0, 0, 0, 0.07);
   height: calc(100vh - 4em);
