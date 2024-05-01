@@ -61,14 +61,12 @@ function App() {
     <div className="App">
       <valuesContext.Provider value={values}>
         {/* add use context*/}
-        <div className="desktop-container">
-          <OptionsPanel />
-          <Canvas />
-          <button className="saveSvg" onClick={handleSaveSvg}>
-            Save SVG
-          </button>
-          <BuyWithShopify />
-        </div>
+        <OptionsPanel />
+        <Canvas />
+        <button className="saveSvg" onClick={handleSaveSvg}>
+          Save SVG
+        </button>
+        <BuyWithShopify />
       </valuesContext.Provider>
     </div>
   );
