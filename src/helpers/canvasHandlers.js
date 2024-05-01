@@ -52,7 +52,7 @@ const handleTextChange = (text, id, canvas) => {
     if (!object.id.includes(pureId)) return;
     object.set({ text: text });
     canvas?.renderAll();
-    if (object.width * object.scaleX > canvas?.width / 4) object.scaleToWidth(canvas?.width);
+    if (object.width * object.scaleX > canvas?.width / 4) object.scaleToWidth(canvas?.width - 50);
     canvas?.renderAll();
   });
 };
