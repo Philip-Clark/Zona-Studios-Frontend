@@ -1,25 +1,30 @@
 import ImageTracer from 'imagetracerjs';
 import { smoothImage } from './pathTools';
-import { potrace, init } from 'esm-potrace-wasm';
-import { colorizeSVG } from './colorizeSVG';
 
 const exportCurrentCanvas = async (fileName, canvas) => {
-  await init();
-
   canvas.renderAll();
-  const context = canvas.getContext('2d');
-  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const canvasDataUrl = canvas.toDataURL({ format: 'png', quality: 0.1 });
 
-  const svgString = await potrace(imageData, {
-    turdsize: 10,
-    turnpolicy: 'majority',
-    opticurve: 1,
-    alphamax: 1,
-    opttolerance: 1,
-    svg: true,
+  return new Promise((resolve, reject) => {
+    ImageTracer.imageToSVG(
+      canvasDataUrl,
+      (svgString) => {
+        // const a = document.createElement('a');
+        // a.href = `data:image/svg+xml,${encodeURIComponent(svgString)}`;
+        // a.download = `${fileName}.svg`;
+        // a.click();
+        resolve(svgString);
+      },
+      {
+        ltres: 1.5,
+        qtres: 1.5,
+        rightangleenhance: true,
+        numberofcolors: 2,
+        scale: 1,
+        strokewidth: 0,
+      }
+    );
   });
-  const cleanedSVG = svgString.match(/<svg.*<\/svg>/s)[0];
-  return cleanedSVG;
 };
 
 const saveForeground = (canvas) => {
@@ -45,19 +50,10 @@ const saveBackground = (canvas) => {
 };
 
 const saveCanvas = async (canvas) => {
-  const zoom = 4;
-  canvas.setHeight(`${400 * zoom}`);
-  canvas.setWidth(`${400 * zoom}`);
-  canvas.setZoom(zoom);
-  canvas.discardActiveObject().renderAll();
-  const backgroundString = await saveBackground(canvas);
   const foregroundString = await saveForeground(canvas);
-
-  const colorizedForeground = colorizeSVG(foregroundString, 'red');
-  const colorizedBackground = colorizeSVG(backgroundString, 'blue');
-
+  const backgroundString = await saveBackground(canvas);
   canvas.clear();
-  return { foregroundString: colorizedForeground, backgroundString: colorizedBackground };
+  return { foregroundString, backgroundString };
 };
 
 export { exportCurrentCanvas, saveCanvas };

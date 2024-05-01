@@ -9,7 +9,7 @@ body {
   height: 100vh;
   background-size: cover;
   transition: background-size 0.5s ease-in-out;
-  background-position: left;
+  background-position: center;
 }
 
 code {
