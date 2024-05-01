@@ -6,15 +6,15 @@ fabric.Object.prototype.set({
   originY: 'center',
   objectCaching: false,
   cornerStyle: 'circle',
-  cornerColor: '#373e3f',
-  cornerSize: 12,
+  cornerColor: '#38373f',
+  cornerSize: 46,
   shadow: 'rgba(0, 0, 0, 0.706) -2px 2px 5px',
   transparentCorners: false,
-  borderColor: '#373e3f',
-  borderScaleFactor: 2,
+  borderColor: '#38373f',
+  borderScaleFactor: 6,
   perPixelTargetFind: true,
   strokeWidth: 0,
-  padding: 1,
+  padding: 20,
 });
 
 fabric.Text.prototype.set({

@@ -1,42 +1,26 @@
 .optionsPanel {
   z-index: 100;
-  max-width: min-content;
+  position: absolute;
   background: #dfdfdf;
   border-radius: 30px;
   box-shadow: 5px 5px 20px 1px rgba(0, 0, 0, 0.07);
-  height: calc(100vh - 4em);
-  margin: 1em 1em;
+  width: 307px;
+  height: calc(90vh - 4em);
+  margin: 5vh 1em;
   padding: 1em;
   overflow: hidden;
 }
 
-/* Custom Scrollbar Styles */
-.optionsPanel > .scrollBox::-webkit-scrollbar {
-  width: 5px;
-}
-
-.optionsPanel > .scrollBox::-webkit-scrollbar-track {
-  background-color: #ffffff53;
-  border-radius: 99px;
-}
-
-.optionsPanel > .scrollBox::-webkit-scrollbar-thumb {
-  background-color: #5bc6cd;
-  width: 5px;
-  border-radius: 99px;
-}
-
 .optionsPanel > .scrollBox {
   overflow-y: scroll;
-
+  scrollbar-width: thin;
+  scrollbar-color: #5bc6cd #dfdfdf;
   padding: 1em;
-  padding-right: 1.5em;
   height: calc(100% - 2em);
   display: flex;
   flex-direction: column;
   gap: 1em;
 }
-
 .optionsPanel > .scrollBox > h2 {
   font-weight: 700;
   font-size: 1rem;
@@ -74,7 +58,6 @@
 }
 .fonts {
   padding: 0.5em;
-  height: 3em;
 }
 
 .templateButton[data-selected='true'],
@@ -108,11 +91,10 @@
 
 .names {
   display: flex;
-  flex-direction: column;
-  /* flex-wrap: wrap; */
+  justify-content: space-between;
+  flex-wrap: wrap;
   width: 100%;
   gap: 0.5em;
-  margin-bottom: 1em;
 }
 
 .names input {

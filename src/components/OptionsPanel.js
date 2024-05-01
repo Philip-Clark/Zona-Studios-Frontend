@@ -45,6 +45,7 @@ const OptionsPanel = () => {
           })}
         </select>
         <h2> Customization </h2>
+        <h3> Wood Type </h3>
         <div className="woods">
           {woods.map((wood) => {
             return (
@@ -61,6 +62,7 @@ const OptionsPanel = () => {
             );
           })}
         </div>
+        <h3> Text </h3>
         <div className="names">
           {fields.map((field) => (
             <section key={field.id}>
