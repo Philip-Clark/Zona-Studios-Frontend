@@ -1,6 +1,7 @@
 import ImageTracer from 'imagetracerjs';
 import { smoothImage } from './pathTools';
 import { potrace, init } from 'esm-potrace-wasm';
+import { colorizeSVG } from './colorizeSVG';
 
 const exportCurrentCanvas = async (fileName, canvas) => {
   await init();
@@ -8,10 +9,12 @@ const exportCurrentCanvas = async (fileName, canvas) => {
   canvas.renderAll();
   const context = canvas.getContext('2d');
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
   const svgString = await potrace(imageData, {
     turdsize: 10,
     turnpolicy: 'majority',
-    optcurve: true,
+    opticurve: 1,
+    alphamax: 1,
     opttolerance: 1,
     svg: true,
   });
@@ -42,14 +45,19 @@ const saveBackground = (canvas) => {
 };
 
 const saveCanvas = async (canvas) => {
-  canvas.setHeight(`${400 * 2}`);
-  canvas.setWidth(`${400 * 2}`);
-  canvas.setZoom(1);
-  canvas.renderAll();
+  const zoom = 4;
+  canvas.setHeight(`${400 * zoom}`);
+  canvas.setWidth(`${400 * zoom}`);
+  canvas.setZoom(zoom);
+  canvas.discardActiveObject().renderAll();
   const backgroundString = await saveBackground(canvas);
   const foregroundString = await saveForeground(canvas);
+
+  const colorizedForeground = colorizeSVG(foregroundString, 'red');
+  const colorizedBackground = colorizeSVG(backgroundString, 'blue');
+
   canvas.clear();
-  return { foregroundString, backgroundString };
+  return { foregroundString: colorizedForeground, backgroundString: colorizedBackground };
 };
 
 export { exportCurrentCanvas, saveCanvas };
