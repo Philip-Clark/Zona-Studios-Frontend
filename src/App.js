@@ -6,6 +6,7 @@ import { valuesContext } from './contexts';
 import { useMemo } from 'react';
 import { fontsList } from './definitions/fonts';
 import { BuyWithShopify } from './components/BuyWithShopify';
+import MobileNav from './components/MobileNav';
 
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState({ id: 0 });
@@ -68,6 +69,10 @@ function App() {
             Save SVG
           </button>
           <BuyWithShopify />
+        </div>
+        <div className="mobile-container">
+          <Canvas />
+          <MobileNav />
         </div>
       </valuesContext.Provider>
     </div>

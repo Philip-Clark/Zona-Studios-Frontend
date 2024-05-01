@@ -56,10 +56,24 @@
   align-items: start;
 }
 
+.mobile-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  width: 100%;
+  align-items: start;
+}
+
+@media (min-width: 800px) {
+  .mobile-container {
+    display: none;
+  }
+}
+
 /* 
 media queries */
-/* @media (max-width: 800px) {
+@media (max-width: 800px) {
   .desktop-container {
     display: none;
   }
-} */
+}
