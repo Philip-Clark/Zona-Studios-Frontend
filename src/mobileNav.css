@@ -11,11 +11,11 @@
 .stepper {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
   gap: 1em;
   border-top: #c1c1c1 1px solid;
   background-color: #f5f5f5;
-  padding: 1em;
+  padding: 1em 20%;
 }
 
 .stepper > button {
@@ -43,16 +43,21 @@
   background-color: #f5f5f5;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  padding: 1em;
+  justify-content: space-between;
+  padding: 1em 20%;
 }
 
 .stepButtons > button {
   aspect-ratio: 1;
   border-radius: 5px;
-  background-color: transparent;
   border: none;
-  transition: opacity 0.2s ease-in-out;
+  font-size: 1.5em;
+  padding: 0.5em;
+  display: flex;
+  align-items: center;
+  color: #414141;
+  background-color: #ffffff00;
+  transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .stepButtons > button#active {
@@ -63,4 +68,59 @@
 .steps {
   position: relative;
   top: 0;
+}
+
+.horizontal-scroll {
+  overflow: visible;
+  overflow-x: scroll;
+  white-space: nowrap;
+  padding-left: 30%;
+  padding-top: 30px;
+  padding-right: 30%;
+  scroll-behavior: smooth;
+}
+
+.horizontal-scroll-item {
+  box-sizing: border-box;
+  width: 100px;
+  aspect-ratio: 1;
+  margin: 1rem;
+  border-radius: 5px;
+  border: transparent 2px solid;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.243);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+  font-weight: 600;
+  background-size: contain;
+  background-position: center;
+  background-color: #ffffff;
+}
+
+.horizontal-scroll-item#active {
+  transform: scale(1.05) translateY(-10%);
+  box-shadow: 0px 8px 14px rgba(0, 0, 0, 0.199);
+  border: #5bc6cd 2px solid;
+}
+
+.size-button {
+  font-size: 2em;
+}
+
+@media (max-width: 600px) {
+  .stepper {
+    padding: 1em 10%;
+  }
+  .stepButtons {
+    padding: 1em 10%;
+  }
+}
+
+@media (max-width: 400px) {
+  .stepper {
+    padding: 1em 5px;
+  }
+  .stepButtons {
+    padding: 1em 5px;
+  }
 }

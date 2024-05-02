@@ -5,27 +5,31 @@ import { sizes } from '../definitions/sizes';
 export default function MobileSize() {
   const { setSize, size } = useContext(valuesContext);
 
-  const handleSizeSelection = (size) => {
+  const handleSizeSelection = (e, size) => {
     setSize(`${size}`);
+    e.target.parentNode.scrollLeft = e.target.offsetLeft - window.innerWidth / 2.5;
   };
 
   useEffect(() => {
-    console.log(size);
-  }, [size]);
+    const active = document.querySelector('.horizontal-scroll.mobileSize #active');
+    if (!active) return;
+
+    active.parentNode.style.scrollBehavior = 'auto';
+    const scroll = active.offsetLeft;
+    active.parentNode.scrollLeft = scroll - window.innerWidth / 2.5;
+    active.parentNode.style.scrollBehavior = 'smooth';
+  }, []);
 
   return (
-    <div style={{ overflowX: 'scroll', whiteSpace: 'nowrap' }}>
-      {sizes.map((size, id) => (
+    <div className="horizontal-scroll mobileSize">
+      {sizes.map((_size, id) => (
         <button
           key={id}
-          style={{
-            width: '100px',
-            height: '100px',
-            margin: '10px',
-          }}
-          onClick={() => handleSizeSelection(size)}
+          className="horizontal-scroll-item size-button"
+          onClick={(e) => handleSizeSelection(e, _size)}
+          id={_size === size ? 'active' : 'stale'}
         >
-          {size}X{size}
+          {_size}"
         </button>
       ))}
     </div>

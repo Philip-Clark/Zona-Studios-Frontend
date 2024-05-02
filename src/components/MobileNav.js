@@ -7,6 +7,22 @@ import MobileInputs from './MobileInputs';
 import MobileCustomizer from './MobileCustomizer';
 import MobilePurchase from './MobilePurchase';
 
+import { FaImage } from 'react-icons/fa';
+import { FaRulerCombined } from 'react-icons/fa';
+import { FaSwatchbook } from 'react-icons/fa';
+import { FaKeyboard } from 'react-icons/fa';
+import { FaSliders } from 'react-icons/fa6';
+import { FaShoppingCart } from 'react-icons/fa';
+
+const stepIcons = [
+  <FaImage />,
+  <FaSwatchbook />,
+  <FaRulerCombined />,
+  <FaKeyboard />,
+  <FaSliders />,
+  <FaShoppingCart />,
+];
+
 const stepComponentDictionary = {
   0: <MobileTemplates />,
   1: <MobileWood />,
@@ -36,7 +52,7 @@ const MobileNav = () => {
             onClick={() => setStep(index)}
             id={step === index ? 'active' : 'stale'}
           >
-            Step {index + 1}
+            {stepIcons[index]}
           </button>
         ))}
       </div>
