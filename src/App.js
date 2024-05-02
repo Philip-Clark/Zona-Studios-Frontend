@@ -22,6 +22,16 @@ function App() {
   const [shouldSave, setShouldSave] = useState(false);
   const [canvas, setCanvas] = useState(null);
   const [filename, setFilename] = useState('CustomSign');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 800);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     let fileNameIdentifiers = [fields.map((field) => field.text)];
@@ -61,18 +71,16 @@ function App() {
   return (
     <div className="App">
       <valuesContext.Provider value={values}>
-        {/* add use context*/}
-        <div className="desktop-container">
-          <OptionsPanel />
+        <div className="container">
+          {!isMobile && <OptionsPanel />}
           <Canvas />
-          <button className="saveSvg" onClick={handleSaveSvg}>
-            Save SVG
-          </button>
-          <BuyWithShopify />
-        </div>
-        <div className="mobile-container">
-          <Canvas />
-          <MobileNav />
+          {!isMobile && (
+            <button className="saveSvg" onClick={handleSaveSvg}>
+              Save SVG
+            </button>
+          )}
+          {!isMobile && <BuyWithShopify />}
+          {isMobile && <MobileNav />}
         </div>
       </valuesContext.Provider>
     </div>

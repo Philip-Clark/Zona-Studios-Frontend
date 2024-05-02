@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../mobileNav.css';
-import MobileTemplates from './mobileTemplates';
+import MobileTemplates from './MobileTemplates';
 import MobileWood from './MobileWood';
 import MobileSize from './MobileSize';
 import MobileInputs from './MobileInputs';
@@ -9,8 +9,8 @@ import MobilePurchase from './MobilePurchase';
 
 const stepComponentDictionary = {
   0: <MobileTemplates />,
-  1: MobileWood(),
-  2: MobileSize(),
+  1: <MobileWood />,
+  2: <MobileSize />,
   3: MobileInputs(),
   4: MobileCustomizer(),
   5: MobilePurchase(),

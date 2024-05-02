@@ -5,7 +5,7 @@ import { templates } from '../definitions/templates';
 export default function MobileTemplates() {
   const context = useContext(valuesContext);
 
-  const handleTemplateSelection = (template) => () => {
+  const handleTemplateSelection = (template) => {
     context.setSelectedTemplate(template);
   };
 
@@ -20,7 +20,7 @@ export default function MobileTemplates() {
             margin: '10px',
             backgroundColor: template.color,
           }}
-          onClick={handleTemplateSelection(template)}
+          onClick={() => handleTemplateSelection(template)}
           id={context.selectedTemplate.id === template.id ? 'active' : 'stale'}
         >
           {template.name}
