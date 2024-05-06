@@ -17,7 +17,7 @@ export const templates = [
     path: 'CircularHouse.svg',
     image: 'template3.png',
   },
-  { id: 4, name: 'Coming Soon', path: '', image: '' },
+  { id: 4, name: 'CAFE', path: 'CAFE.svg', image: '' },
   { id: 5, name: 'Coming Soon', path: '', image: '' },
   { id: 6, name: 'Coming Soon', path: '', image: '' },
   { id: 7, name: 'Coming Soon', path: '', image: '' },

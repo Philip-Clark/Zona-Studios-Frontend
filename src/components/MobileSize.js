@@ -21,7 +21,7 @@ export default function MobileSize() {
   }, []);
 
   return (
-    <div className="horizontal-scroll mobileSize">
+    <div className="horizontal-scroll mobileSize MobileStep">
       {sizes.map((_size, id) => (
         <button
           key={id}

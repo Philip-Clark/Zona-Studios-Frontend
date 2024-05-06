@@ -21,7 +21,7 @@ export default function MobileTemplates() {
   }, []);
 
   return (
-    <div className="horizontal-scroll mobileTemplate">
+    <div className="horizontal-scroll mobileTemplate MobileStep">
       {templates.map((template) => (
         <button
           className="horizontal-scroll-item"

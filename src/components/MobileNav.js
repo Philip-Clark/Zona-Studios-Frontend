@@ -16,23 +16,23 @@ import { FaShoppingCart } from 'react-icons/fa';
 
 const stepIcons = [
   <FaImage />,
-  <FaSwatchbook />,
   <FaRulerCombined />,
   <FaKeyboard />,
-  <FaSliders />,
+  <FaSwatchbook />,
+  // <FaSliders />,
   <FaShoppingCart />,
 ];
 
 const stepComponentDictionary = {
   0: <MobileTemplates />,
-  1: <MobileWood />,
-  2: <MobileSize />,
-  3: MobileInputs(),
-  4: MobileCustomizer(),
-  5: MobilePurchase(),
+  1: <MobileSize />,
+  2: <MobileInputs />,
+  3: <MobileWood />,
+  // 4: <MobileCustomizer />,
+  4: <MobilePurchase />,
 };
 const MobileNav = () => {
-  const steps = 6;
+  const steps = 5;
   const [step, setStep] = useState(0);
 
   const handleNextStep = () => {
@@ -58,7 +58,7 @@ const MobileNav = () => {
       </div>
 
       <div className="stepper">
-        <button onClick={handlePrevStep} disabled={step === -1}>
+        <button onClick={handlePrevStep} disabled={step === 0}>
           Previous
         </button>
         <span>

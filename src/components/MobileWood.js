@@ -1,12 +1,19 @@
 import React, { useContext, useEffect } from 'react';
 import { valuesContext } from '../contexts';
 import { woods } from '../definitions/woods';
+import { colors } from '../definitions/colors';
 
 export default function MobileWood() {
-  const { setSelectedWood, selectedWood } = useContext(valuesContext);
+  const { setSelectedWood, selectedWood, setSelectedColor, selectedColor } =
+    useContext(valuesContext);
 
   const handleWoodSelection = (e, wood) => {
     setSelectedWood(wood);
+    e.target.parentNode.scrollLeft = e.target.offsetLeft - window.innerWidth / 2.5;
+  };
+
+  const handleColorSelection = (e, color) => {
+    setSelectedColor(color);
     e.target.parentNode.scrollLeft = e.target.offsetLeft - window.innerWidth / 2.5;
   };
 
@@ -21,18 +28,34 @@ export default function MobileWood() {
   }, []);
 
   return (
-    <div className="horizontal-scroll mobileWood">
-      {woods.map((wood) => (
-        <button
-          key={wood.id}
-          className="horizontal-scroll-item"
-          style={{
-            backgroundImage: `url(${wood.url})`,
-          }}
-          onClick={(e) => handleWoodSelection(e, wood)}
-          id={selectedWood.id === wood.id ? 'active' : 'stale'}
-        ></button>
-      ))}
+    <div className="MobileStep woodAndColor">
+      <div className="horizontal-scroll mobileWood">
+        {woods.map((wood) => (
+          <button
+            key={wood.id}
+            className="horizontal-scroll-item wood"
+            style={{
+              backgroundImage: `url(${wood.url})`,
+            }}
+            onClick={(e) => handleWoodSelection(e, wood)}
+            id={selectedWood.id === wood.id ? 'active' : 'stale'}
+          ></button>
+        ))}
+      </div>
+
+      <div className="horizontal-scroll mobileColor">
+        {colors.map((color) => (
+          <button
+            key={color.id}
+            className="horizontal-scroll-item color"
+            style={{
+              backgroundColor: color.value,
+            }}
+            onClick={(e) => handleColorSelection(e, color)}
+            id={selectedColor.id === color.id ? 'active' : 'stale'}
+          ></button>
+        ))}
+      </div>
     </div>
   );
 }

@@ -76,7 +76,7 @@ const Canvas = () => {
     editor?.canvas.setWidth('400');
     editor?.canvas.clear();
     editor?.canvas.setZoom(1);
-    editor?.canvas.set('targetFindTolerance', 20);
+    editor?.canvas.set('targetFindTolerance', 2);
     editor?.canvas.set('selection', false);
     setCanvas(editor?.canvas);
   }, [editor]);
