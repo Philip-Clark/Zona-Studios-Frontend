@@ -3,13 +3,11 @@ import { saveCanvas } from '../helpers/canvasExporter';
 import { valuesContext } from '../contexts';
 import combineSVGStrings from '../helpers/combineSVGStrings';
 
-const apiURL = 'http://api.railway.internal:3000/backend';
-
 const uploadImage = async (canvas, filename) => {
   const { foregroundString, backgroundString } = await saveCanvas(canvas);
   const combinedSVG = combineSVGStrings(backgroundString, foregroundString);
 
-  const response = await fetch(`${apiURL}/api/image`, {
+  const response = await fetch(`${process.env.BACKEND_URL}/api/image`, {
     method: 'POST',
     body: JSON.stringify({ combinedSVG, filename }),
     headers: {
@@ -21,7 +19,7 @@ const uploadImage = async (canvas, filename) => {
 };
 
 const createCart = async (canvas, url) => {
-  const { data, extensions, message } = await fetch(`${apiURL}/api/checkout`, {
+  const { data, extensions, message } = await fetch(`${process.env.BACKEND_URL}/api/checkout`, {
     method: 'POST',
     body: JSON.stringify({ url }),
     headers: {
