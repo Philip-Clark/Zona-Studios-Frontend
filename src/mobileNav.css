@@ -232,6 +232,13 @@
   padding: 0;
 }
 
+.specs > h3 {
+  text-align: center;
+  font-style: italic;
+  color: #414141;
+  font-weight: 100;
+}
+
 .specs > p > span {
   font-weight: 600;
   padding-left: 0.1em;

@@ -50,7 +50,7 @@ const MobilePurchase = () => {
     <div className="mobilePurchase MobileStep">
       {/* <button onClick={handleSave}>Save</button> */}
       <div className="specs">
-        <p>
+        {/* <p>
           Template: <span>{context.selectedTemplate.name}</span>
         </p>
         <p>
@@ -63,7 +63,8 @@ const MobilePurchase = () => {
           <p key={field.id}>
             {field.id}: <span>{field.text}</span>
           </p>
-        ))}
+        ))} */}
+        <h3>Price available at checkout</h3>
       </div>
       <button onClick={handlePurchase}>Purchase</button>
     </div>
