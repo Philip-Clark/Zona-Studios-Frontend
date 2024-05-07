@@ -74,15 +74,9 @@ function App() {
         <div className="container">
           {!isMobile && <OptionsPanel />}
           <Canvas />
-          {!isMobile && (
-            <button className="saveSvg" onClick={handleSaveSvg}>
-              Save SVG
-            </button>
-          )}
           {!isMobile && <BuyWithShopify />}
           {isMobile && <MobileNav />}
         </div>
-
       </valuesContext.Provider>
     </div>
   );

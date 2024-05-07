@@ -52,7 +52,9 @@ const handleTextChange = (text, id, canvas) => {
     if (!object.id.includes(pureId)) return;
     object.set({ text: text });
     canvas?.renderAll();
-    if (object.width * object.scaleX > canvas?.width / 4) object.scaleToWidth(canvas?.width);
+
+    if (object.width > canvas.width) object.scaleToWidth(canvas?.width);
+
     canvas?.renderAll();
   });
 };
@@ -73,7 +75,7 @@ const handleSizeChange = (size, canvas) => {
   canvas?.set('centeredScaling', true);
   const intSize = parseInt(size.split('x')[0]);
   const scaleRatio = intSize / 48;
-  document.querySelector('.editor').style.transform = `scale(${scaleRatio / 4})`;
+  document.querySelector('.editor').style.transform = `scale(${scaleRatio / 1})`;
 };
 
 const handleWoodChange = (wood, canvas) => {
