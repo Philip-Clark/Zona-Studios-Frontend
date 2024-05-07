@@ -81,7 +81,7 @@ const Canvas = () => {
     editor?.canvas.clear();
     editor?.canvas.setZoom(1);
     editor?.canvas.set('targetFindTolerance', 2);
-    editor?.canvas.set('selection', false);
+    // editor?.canvas.set('selection', false);
     setCanvas(editor?.canvas);
     if (windowSize.width < 400)
       document.querySelector('.editor').style.transform = `scale(${windowSize.width / 400})`;
