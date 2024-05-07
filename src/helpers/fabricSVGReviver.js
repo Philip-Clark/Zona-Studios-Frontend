@@ -4,7 +4,7 @@ import pathExpand from './pathExpand';
 import { handleWoodChange } from './canvasHandlers';
 
 const reviveNonText = (object, canvas) => {
-  object.set({ id: object.id + ' background', selectable: false, shadow: 'none' });
+  object.set({ id: object.id + ' background', selectable: false, shadow: 'none', fill: '#545454' });
   canvas.add(object);
 };
 
@@ -28,8 +28,8 @@ const reviveText = async (object, canvas, fonts, setFont) => {
       });
       clone.set({
         id: object.id + ' background',
-        stroke: 'red',
-        fill: '#ff0000',
+        stroke: '#545454',
+        fill: '#545454',
         shadow: 'none',
         paintFirst: 'stroke',
         selectable: false,

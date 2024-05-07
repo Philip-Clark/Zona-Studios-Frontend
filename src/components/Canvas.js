@@ -1,8 +1,9 @@
 import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { valuesContext } from '../contexts';
 import fabricSVGReviver from '../helpers/fabricSVGReviver';
 import { loadFonts } from '../helpers/fontLoader';
+import { GridLoader } from 'react-spinners';
 import {
   handleColorChange,
   handleFontChange,
@@ -35,6 +36,8 @@ const Canvas = () => {
     setShouldSave,
     windowSize,
   } = useContext(valuesContext);
+
+  const [loadingTemplate, setLoadingTemplate] = useState(true);
 
   useEffect(() => {
     loadFonts(fonts);
@@ -86,12 +89,15 @@ const Canvas = () => {
 
   useEffect(() => {
     (async () => {
+      setLoadingTemplate(true);
       editor?.canvas.clear();
       let svgString = await fetch(
         process.env.PUBLIC_URL + `/templates/${selectedTemplate.path}`
       ).then((res) => {
         return res.text();
       });
+      editor?.canvas.clear();
+      setLoadingTemplate(false);
 
       console.log(svgString);
       svgString = resolveTspans(svgString);
@@ -131,7 +137,16 @@ const Canvas = () => {
 
   return (
     <div className="fabricHolder">
-      <FabricJSCanvas className="editor" onReady={onReady} />
+      {loadingTemplate && (
+        <div className="loading">
+          <GridLoader color="#5bc6cd" />
+        </div>
+      )}
+      <FabricJSCanvas
+        className="editor"
+        id={loadingTemplate ? 'loading' : 'ready'}
+        onReady={onReady}
+      />
     </div>
   );
 };

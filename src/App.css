@@ -16,6 +16,7 @@
   align-items: center;
   max-width: 70%;
   height: 70%;
+  position: relative;
 }
 .editor {
   /* margin: auto; */
@@ -23,6 +24,17 @@
   width: fit-content;
   transition: transform 0.3s ease;
 }
+
+.loading {
+  position: absolute;
+}
+
+.editor.loading {
+  width: 100vw;
+  height: 50px;
+  background-color: red;
+}
+
 .exporter {
   /* margin: auto; */
   text-align: right;

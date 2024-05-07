@@ -71,7 +71,7 @@ fabric.Text.prototype.set({
 });
 
 fabric.Canvas.prototype.set({
-  selectable: false,
+  // selectable: false,
   centeredScaling: false,
 });
 
