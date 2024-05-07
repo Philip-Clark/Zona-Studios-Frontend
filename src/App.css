@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Kablammo&family=Lobster&family=Pacifico&family=Poppins&family=Sacramento&family=Satisfy&family=Sriracha&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
 .lower-canvas {
-  filter: drop-shadow(rgba(0, 0, 0, 1) -2px 2px 5px)
-    drop-shadow(rgba(59, 59, 59, 0.181) 2px 2px 20px);
+  filter: drop-shadow(rgba(0, 0, 0, 1) -4px 4px 10px) drop-shadow(rgba(0, 0, 0, 0.319) 2px 2px 20px);
 }
 
 .App {
@@ -25,6 +24,7 @@
   transition: transform 0.3s ease;
 }
 .exporter {
+  /* margin: auto; */
   text-align: right;
   width: fit-content;
   transition: transform 0.5s ease-in-out;

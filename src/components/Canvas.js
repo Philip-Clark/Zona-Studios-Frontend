@@ -72,8 +72,8 @@ const Canvas = () => {
   }, [editor, fields, selectedWood, selectedColor, size, font, shouldSave]);
 
   useEffect(() => {
-    editor?.canvas.setHeight('400');
-    editor?.canvas.setWidth('400');
+    editor?.canvas.setHeight('1600');
+    editor?.canvas.setWidth('1600');
     editor?.canvas.clear();
     editor?.canvas.setZoom(1);
     editor?.canvas.set('targetFindTolerance', 2);
@@ -82,17 +82,15 @@ const Canvas = () => {
   }, [editor]);
 
   useEffect(() => {
-    editor?.canvas.setHeight('400');
-    editor?.canvas.setWidth('400');
-    editor?.canvas.clear();
-    editor?.canvas.setZoom(1);
     (async () => {
+      editor?.canvas.clear();
       let svgString = await fetch(
         process.env.PUBLIC_URL + `/templates/${selectedTemplate.path}`
       ).then((res) => {
         return res.text();
       });
 
+      console.log(svgString);
       svgString = resolveTspans(svgString);
       fabric.loadSVGFromString(
         svgString,

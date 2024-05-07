@@ -82,6 +82,7 @@ function App() {
           {!isMobile && <BuyWithShopify />}
           {isMobile && <MobileNav />}
         </div>
+
       </valuesContext.Provider>
     </div>
   );
