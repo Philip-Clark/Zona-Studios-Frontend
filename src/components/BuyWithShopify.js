@@ -7,7 +7,7 @@ const uploadImage = async (canvas, filename) => {
   const { foregroundString, backgroundString } = await saveCanvas(canvas);
   const combinedSVG = combineSVGStrings(backgroundString, foregroundString);
 
-  const response = await fetch(`${process.env.BACKEND_URL}/api/image`, {
+  const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/image`, {
     method: 'POST',
     body: JSON.stringify({ combinedSVG, filename }),
     headers: {
@@ -19,13 +19,16 @@ const uploadImage = async (canvas, filename) => {
 };
 
 const createCart = async (canvas, url) => {
-  const { data, extensions, message } = await fetch(`${process.env.BACKEND_URL}/api/checkout`, {
-    method: 'POST',
-    body: JSON.stringify({ url }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => res.json());
+  const { data, extensions, message } = await fetch(
+    `${process.env.REACT_APP_BACKEND_URL}/api/checkout`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ url }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  ).then((res) => res.json());
   if (!data.cartCreate.cart) return null;
   return data.cartCreate.cart;
 };
