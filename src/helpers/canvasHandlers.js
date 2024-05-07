@@ -37,7 +37,7 @@ const handleColorChange = (color, canvas) => {
   const objectsActive =
     canvas?.getActiveObjects() === undefined || canvas?.getActiveObjects().length > 0;
 
-  const objectsToPaint = objectsActive ? canvas?.getActiveObjects() : canvas?._objects;
+  const objectsToPaint = canvas?._objects;
   console.log({ objectsToPaint });
   objectsToPaint?.forEach((object) => {
     if (object.id.includes('background')) return;

@@ -17,6 +17,7 @@ export default function Templates() {
               key={template.id}
               data-selected={context.selectedTemplate.id === template.id ? true : false}
               onClick={() => {
+                if (template.path === '') return;
                 context.setSelectedTemplate(template);
               }}
               className="templateButton"

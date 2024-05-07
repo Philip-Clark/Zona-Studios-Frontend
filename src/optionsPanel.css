@@ -64,7 +64,8 @@
 .templateButton[data-selected='true'],
 .wood[data-selected='true'],
 .color[data-selected='true'] {
-  border: 2px solid #5bc6cd;
+  border: 1px solid #5bc6cd;
+  outline: 1px solid #5bc6cd;
 }
 
 .moreTemplatesButton {

@@ -80,7 +80,7 @@ const OptionsPanel = () => {
           ))}
         </div>
 
-        <select
+        {/* <select
           className="fonts"
           title="Font"
           value={font}
@@ -95,7 +95,7 @@ const OptionsPanel = () => {
               </option>
             );
           })}
-        </select>
+        </select> */}
 
         <div className="colors">
           {colors.map((color) => {
