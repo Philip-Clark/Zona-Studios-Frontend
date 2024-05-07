@@ -12,18 +12,16 @@
 .fabricHolder {
   flex: 1;
   display: flex;
-  align-content: center;
   justify-content: center;
   align-items: center;
+  max-width: 70%;
+  height: 70%;
 }
 .editor {
   /* margin: auto; */
   text-align: right;
   width: fit-content;
-  transition: transform 0.5s ease-in-out;
-  /* border: dashed rgb(255, 255, 255) 8px; */
-
-  transform: scale(0.25);
+  transition: transform 0.3s ease;
 }
 .exporter {
   /* margin: auto; */
@@ -48,4 +46,32 @@
   font-size: large;
 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  width: 100%;
+  align-items: start;
+}
+
+/* 
+media queries */
+@media (max-width: 800px) {
+  .container {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 1.5fr 1fr;
+    justify-content: space-between;
+    align-items: end;
+    height: 100%;
+    width: 100%;
+  }
+
+  .fabricHolder {
+    max-width: 100%;
+    height: fit-content;
+    flex: 0;
+  }
 }

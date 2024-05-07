@@ -69,6 +69,7 @@ const handleFontChange = (font, canvas) => {
 };
 
 const handleSizeChange = (size, canvas) => {
+  console.log({ size });
   canvas?.set('centeredScaling', true);
   const intSize = parseInt(size.split('x')[0]);
   const scaleRatio = intSize / 48;

@@ -6,6 +6,7 @@ import { valuesContext } from './contexts';
 import { useMemo } from 'react';
 import { fontsList } from './definitions/fonts';
 import { BuyWithShopify } from './components/BuyWithShopify';
+import MobileNav from './components/MobileNav';
 
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState({ id: 0 });
@@ -21,6 +22,16 @@ function App() {
   const [shouldSave, setShouldSave] = useState(false);
   const [canvas, setCanvas] = useState(null);
   const [filename, setFilename] = useState('CustomSign');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 800);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     let fileNameIdentifiers = [fields.map((field) => field.text)];
@@ -60,13 +71,18 @@ function App() {
   return (
     <div className="App">
       <valuesContext.Provider value={values}>
-        {/* add use context*/}
-        <OptionsPanel />
-        <Canvas />
-        <button className="saveSvg" onClick={handleSaveSvg}>
-          Save SVG
-        </button>
-        <BuyWithShopify />
+        <div className="container">
+          {!isMobile && <OptionsPanel />}
+          <Canvas />
+          {!isMobile && (
+            <button className="saveSvg" onClick={handleSaveSvg}>
+              Save SVG
+            </button>
+          )}
+          {!isMobile && <BuyWithShopify />}
+          {isMobile && <MobileNav />}
+        </div>
+
       </valuesContext.Provider>
     </div>
   );

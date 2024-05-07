@@ -75,8 +75,8 @@ const Canvas = () => {
     editor?.canvas.setHeight('1600');
     editor?.canvas.setWidth('1600');
     editor?.canvas.clear();
-    editor?.canvas.setZoom(4);
-    editor?.canvas.set('targetFindTolerance', 20);
+    editor?.canvas.setZoom(1);
+    editor?.canvas.set('targetFindTolerance', 2);
     editor?.canvas.set('selection', false);
     setCanvas(editor?.canvas);
   }, [editor]);
@@ -97,6 +97,7 @@ const Canvas = () => {
         (objects) => {
           if (!objects) return;
           const editable = objects.filter((object) => object.id.includes('editable'));
+          editor?.canvas.setActiveObject(editable[0]);
           setFields([]);
           setFields(
             editable.map((object) => ({

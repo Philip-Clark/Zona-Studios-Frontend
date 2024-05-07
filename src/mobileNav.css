@@ -1,0 +1,278 @@
+.mobileNav {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
+}
+
+.stepper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1em;
+  border-top: #c1c1c1 1px solid;
+  background-color: #f5f5f5;
+  padding: 1em 20%;
+}
+
+.stepper > button {
+  width: 8em;
+  border-radius: 5px;
+  border: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.stepper > button:first-of-type {
+  background-color: #a0a0a0;
+  color: white;
+}
+.stepper > button:last-of-type {
+  background-color: #5bc6cd;
+  color: white;
+}
+
+.stepper > button:disabled {
+  opacity: 0;
+}
+
+.stepButtons {
+  border-top: #c1c1c1 1px solid;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1em 20%;
+}
+
+.stepButtons > button {
+  aspect-ratio: 1;
+  border-radius: 5px;
+  border: none;
+  font-size: 1.2em;
+  padding: 0.5em;
+  display: flex;
+  align-items: center;
+  color: #414141;
+  background-color: #ffffff00;
+  transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.stepButtons > button#active {
+  background-color: #5bc6cd;
+  color: white;
+}
+
+.steps {
+  position: relative;
+  top: 0;
+}
+
+.horizontal-scroll {
+  overflow: visible;
+  overflow-x: scroll;
+  white-space: nowrap;
+  padding-left: 30%;
+  padding-top: 10px;
+  padding-right: 30%;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+}
+
+.horizontal-scroll-item {
+  box-sizing: border-box;
+  width: 100px;
+  aspect-ratio: 1;
+  margin: 1rem;
+  border-radius: 5px;
+  border: transparent 2px solid;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.243);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+  font-weight: 600;
+  background-size: contain;
+  background-position: center;
+  background-color: #ffffff;
+}
+
+.horizontal-scroll-item#active {
+  transform: scale(1.05) translateY(-10%);
+  box-shadow: 0px 8px 14px rgba(0, 0, 0, 0.199);
+  border: #5bc6cd 2px solid;
+}
+
+.woodAndColor {
+  margin-bottom: 1em;
+  background-color: white;
+  margin: 0.5em 0em;
+  border-radius: 15px;
+  padding: 1em 0em;
+}
+
+.horizontal-scroll-item.color {
+  width: 50px;
+  height: 50px;
+  margin: 0.2em;
+}
+.horizontal-scroll-item.wood {
+  width: 50px;
+  height: 50px;
+  margin: 0.2em;
+}
+
+.size-button {
+  font-size: 2em;
+}
+
+.substep#stale {
+  display: none;
+}
+
+.substep {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  justify-content: center;
+  align-items: stretch;
+  text-align: center;
+  border-radius: 15px;
+  padding: 0.8em;
+  padding-top: 0.5em;
+  margin: 0.3em;
+  margin-bottom: 0;
+  background-color: #ffffff;
+}
+
+.substep label {
+  font-size: 0.8em;
+  color: #696969;
+  font-weight: 600;
+}
+.substep input {
+  font-size: 1.5em;
+  padding: 0.1em;
+  text-overflow: ellipsis;
+  border-radius: 5px;
+  border: 1px solid #c1c1c1;
+  text-align: center;
+}
+
+.substepper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1em 20%;
+  padding-top: 0;
+}
+
+.substepper > button {
+  aspect-ratio: 1;
+  height: 40px;
+  width: 40px;
+  border: none;
+  transition: opacity 0.2s ease-in-out;
+  background-color: transparent;
+  font-weight: 600;
+  font-size: 1em;
+  color: #414141;
+  padding: 0.5em;
+  position: relative;
+  border-radius: 15px;
+}
+
+.substepper > button#stale > svg {
+  display: none;
+}
+
+.substepper > button#active {
+  background-color: #ffffff;
+}
+
+.substepper > button#active > svg {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -90%;
+  left: -50%;
+  z-index: -1;
+}
+
+.mobilePurchase {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1em;
+  background-color: #f5f5f5;
+  margin: 0.5em;
+  border-radius: 15px;
+}
+
+.mobilePurchase > button {
+  border-radius: 5px;
+  border: none;
+  background-color: #5bc6cd;
+  color: white;
+  padding: 0.5em;
+  font-size: 1.2em;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.specs {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.1em;
+}
+
+.specs > p {
+  margin: 0;
+  padding: 0;
+}
+
+.specs > h3 {
+  text-align: center;
+  font-style: italic;
+  color: #414141;
+  font-weight: 100;
+}
+
+.specs > p > span {
+  font-weight: 600;
+  padding-left: 0.1em;
+}
+
+.MobileStep {
+  animation: fadeIn 0.1s ease-in-out 0s;
+}
+
+@keyframes fadeIn {
+  0% {
+    transform: translateY(10%);
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+@media (max-width: 600px) {
+  .stepper {
+    padding: 1em 15%;
+  }
+  .stepButtons {
+    padding: 1em 15%;
+  }
+}
+
+@media (max-width: 400px) {
+  .stepper {
+    padding: 1em 10px;
+  }
+  .stepButtons {
+    padding: 1em 10px;
+  }
+}
