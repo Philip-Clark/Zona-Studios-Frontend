@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { valuesContext } from '../contexts';
 import { saveCanvas } from '../helpers/canvasExporter';
 import combineSVGStrings from '../helpers/combineSVGStrings';
-const apiURL = 'http://localhost:3333';
+const apiURL = 'http://api.railway.internal:3000/backend';
 
 const uploadImage = async (canvas, filename) => {
   const { foregroundString, backgroundString } = await saveCanvas(canvas);
