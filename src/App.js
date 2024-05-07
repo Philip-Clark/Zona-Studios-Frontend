@@ -23,10 +23,15 @@ function App() {
   const [canvas, setCanvas] = useState(null);
   const [filename, setFilename] = useState('CustomSign');
   const [isMobile, setIsMobile] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 800);
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     };
     window.addEventListener('resize', handleResize);
     handleResize();
@@ -60,6 +65,7 @@ function App() {
       setShouldSave,
       filename,
       setFilename,
+      windowSize,
     }),
     [selectedTemplate, selectedWood, selectedColor, size, fields, fonts, font, shouldSave]
   );

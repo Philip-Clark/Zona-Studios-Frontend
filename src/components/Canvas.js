@@ -33,6 +33,7 @@ const Canvas = () => {
     setCanvas,
     shouldSave,
     setShouldSave,
+    windowSize,
   } = useContext(valuesContext);
 
   useEffect(() => {
@@ -79,6 +80,8 @@ const Canvas = () => {
     editor?.canvas.set('targetFindTolerance', 2);
     editor?.canvas.set('selection', false);
     setCanvas(editor?.canvas);
+    if (windowSize.width < 400)
+      document.querySelector('.editor').style.transform = `scale(${windowSize.width / 400})`;
   }, [editor]);
 
   useEffect(() => {
