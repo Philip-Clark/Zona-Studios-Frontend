@@ -7,12 +7,12 @@ fabric.Object.prototype.set({
   objectCaching: false,
   cornerStyle: 'circle',
   cornerColor: '#38373f',
-  cornerSize: 20,
-  touchCornerSize: 40,
+  cornerSize: 80,
+  touchCornerSize: 120,
   shadow: 'rgba(0, 0, 0, 0.706) -2px 2px 5px',
   transparentCorners: false,
   borderColor: '#38373f',
-  borderScaleFactor: 1.5,
+  borderScaleFactor: 8,
   perPixelTargetFind: true,
   centeredScaling: false,
   targetFindTolerance: 4,
@@ -29,6 +29,8 @@ fabric.Object.prototype.setControlsVisibility({
   tl: true,
   tr: true,
 });
+
+fabric.Object.prototype.controls.mtr.offsetY = -200;
 
 fabric.Object.prototype.render = function (ctx, noTransform) {
   // do not render if width/height are zeros or object is not visible

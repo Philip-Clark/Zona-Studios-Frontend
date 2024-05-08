@@ -76,15 +76,17 @@ const Canvas = () => {
   }, [editor, fields, selectedWood, selectedColor, size, font, shouldSave]);
 
   useEffect(() => {
-    editor?.canvas.setHeight('400');
-    editor?.canvas.setWidth('400');
+    editor?.canvas.setHeight('1600');
+    editor?.canvas.setWidth('1600');
     editor?.canvas.clear();
-    editor?.canvas.setZoom(1);
-    editor?.canvas.set('targetFindTolerance', 2);
+    editor?.canvas.setZoom(4);
+    editor?.canvas.set('targetFindTolerance', 4);
     // editor?.canvas.set('selection', false);
+
     setCanvas(editor?.canvas);
+    const canvasWidth = document.querySelector('.editor').clientWidth;
     if (windowSize.width < 400)
-      document.querySelector('.editor').style.transform = `scale(${windowSize.width / 400})`;
+      document.querySelector('.editor').style.transform = `scale(${windowSize.width / 1600})`;
   }, [editor]);
 
   useEffect(() => {

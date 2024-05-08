@@ -17,9 +17,13 @@
   max-width: 70%;
   height: 70%;
   position: relative;
+
+  width: 400px;
+  height: 400px;
 }
 .editor {
   /* margin: auto; */
+  transform: scale(0.25);
   text-align: right;
   width: fit-content;
   transition: transform 0.3s ease;
@@ -65,7 +69,7 @@
   flex-direction: row;
   justify-content: left;
   width: 100%;
-  align-items: start;
+  align-items: center;
 }
 
 /* 
@@ -76,6 +80,7 @@ media queries */
     grid-template-columns: 100%;
     grid-template-rows: 1.5fr 1fr;
     justify-content: space-between;
+    justify-items: center;
     align-items: end;
     height: 100%;
     width: 100%;
@@ -83,7 +88,6 @@ media queries */
 
   .fabricHolder {
     max-width: 100%;
-    height: fit-content;
     flex: 0;
   }
 }
