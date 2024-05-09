@@ -18,12 +18,12 @@ const uploadImage = async (canvas, filename) => {
   return { url: response.url };
 };
 
-const createCart = async (canvas, url) => {
+const createCart = async (canvas, url, size, color) => {
   const { data, extensions, message } = await fetch(
     `${process.env.REACT_APP_BACKEND_URL}/api/checkout`,
     {
       method: 'POST',
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({ url, size, color: color.value }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -34,12 +34,12 @@ const createCart = async (canvas, url) => {
 };
 
 export function BuyWithShopify() {
-  const { canvas, filename, setPreparingCart } = useContext(valuesContext);
+  const { canvas, filename, setPreparingCart, size, selectedColor } = useContext(valuesContext);
 
   const handlePurchase = async () => {
     setPreparingCart(true);
     const { url } = await uploadImage(canvas, filename);
-    const cart = await createCart(canvas, url);
+    const cart = await createCart(canvas, url, size, selectedColor);
     setPreparingCart(false);
     if (!cart) return console.log('Error creating cart');
     window.location.href = cart.checkoutUrl;
