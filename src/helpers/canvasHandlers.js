@@ -53,7 +53,7 @@ const handleTextChange = (text, id, canvas) => {
     object.set({ text: text });
     canvas?.renderAll();
 
-    if (object.width > canvas.width) object.scaleToWidth(canvas?.width);
+    if (object.width > canvas.width / 4) object.scaleToWidth(canvas?.width - 100);
 
     canvas?.renderAll();
   });
