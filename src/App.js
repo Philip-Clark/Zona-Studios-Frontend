@@ -28,6 +28,20 @@ function App() {
     height: window.innerHeight,
   });
   const [preparingCart, setPreparingCart] = useState(false);
+  const [templates, setTemplates] = useState([]);
+  const [colors, setColors] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/data').then((res) =>
+        res.json()
+      );
+
+      if (response.data.templates) setTemplates(response.data.templates);
+      if (response.data.colors) setColors(response.data.colors);
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -50,11 +64,13 @@ function App() {
       selectedTemplate,
       selectedWood,
       selectedColor,
+      colors,
       size,
       fields,
       fonts,
       font,
       setSelectedTemplate,
+      templates,
       setSelectedWood,
       setSelectedColor,
       setSize,

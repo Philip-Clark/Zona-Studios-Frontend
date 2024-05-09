@@ -94,9 +94,7 @@ const Canvas = () => {
     (async () => {
       setLoadingTemplate(true);
       editor?.canvas.clear();
-      let svgString = await fetch(
-        process.env.PUBLIC_URL + `/templates/${selectedTemplate.path}`
-      ).then((res) => {
+      let svgString = await fetch(selectedTemplate.path).then((res) => {
         return res.text();
       });
       editor?.canvas.clear();

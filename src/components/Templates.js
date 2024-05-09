@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { templates } from '../definitions/templates';
+import React, { useEffect, useState } from 'react';
+import { templates as defaultTempalates } from '../definitions/templates';
 import { useContext } from 'react';
 import { valuesContext } from '../contexts';
 
 export default function Templates() {
   const context = useContext(valuesContext);
-  const [templateCount, setTemplateCount] = useState(6);
+  const [templateCount, setTemplateCount] = useState(3);
 
   return (
     <div>
       <h2> Choose Template </h2>
       <div className="templates">
-        {templates.slice(0, templateCount).map((template) => {
+        {context.templates.slice(0, templateCount).map((template) => {
           return (
             <button
               key={template.id}
@@ -20,21 +20,22 @@ export default function Templates() {
                 if (template.path === '') return;
                 context.setSelectedTemplate(template);
               }}
+              style={{
+                backgroundImage: `url(${template.image})`,
+              }}
               className="templateButton"
-            >
-              {template.name}
-            </button>
+            ></button>
           );
         })}
       </div>
       <button
         className="moreTemplatesButton"
         onClick={() => {
-          if (templateCount === templates.length) setTemplateCount(3);
-          else setTemplateCount(templates.length);
+          if (templateCount === context.templates.length) setTemplateCount(3);
+          else setTemplateCount(context.templates.length);
         }}
       >
-        {templateCount === templates.length ? 'Less Templates' : 'More Templates'}
+        {templateCount === context.templates.length ? 'Less Templates' : 'More Templates'}
       </button>
     </div>
   );

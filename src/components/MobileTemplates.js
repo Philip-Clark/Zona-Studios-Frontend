@@ -1,9 +1,20 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { valuesContext } from '../contexts';
-import { templates } from '../definitions/templates';
 
 export default function MobileTemplates() {
   const context = useContext(valuesContext);
+  const [templates, setTemplates] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/data').then((res) =>
+        res.json()
+      );
+      console.log(response);
+      if (response.data.templates) setTemplates(response.data.templates);
+    }
+    fetchData();
+  }, []);
 
   const handleTemplateSelection = (e, template) => {
     context.setSelectedTemplate(template);
@@ -27,7 +38,7 @@ export default function MobileTemplates() {
           className="horizontal-scroll-item"
           key={template.id}
           style={{
-            backgroundImage: `url(${process.env.PUBLIC_URL}/templates/templateImages/${template.image})`,
+            backgroundImage: `url(${template.image})`,
           }}
           onClick={(e) => handleTemplateSelection(e, template)}
           id={context.selectedTemplate.id === template.id ? 'active' : 'stale'}

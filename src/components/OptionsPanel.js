@@ -2,7 +2,6 @@ import { useContext, useState } from 'react';
 import '../optionsPanel.css';
 
 //? DEFINITIONS
-import { colors } from '../definitions/colors';
 import { woods } from '../definitions/woods';
 import { sizes } from '../definitions/sizes';
 import { valuesContext } from '../contexts';
@@ -18,6 +17,7 @@ const OptionsPanel = () => {
     fields,
     setFields,
     setFont,
+    colors,
     fonts,
     font,
     selectedColor,
