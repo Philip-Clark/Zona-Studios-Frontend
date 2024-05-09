@@ -33,10 +33,27 @@
   position: absolute;
 }
 
-.editor.loading {
-  width: 100vw;
-  height: 50px;
-  background-color: red;
+.cartLoading {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  padding: 1em;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 15px;
+  background-color: #ffffff;
+}
+
+.cartLoading > * {
+  margin: 0.5em;
+  padding: 0;
+}
+
+.editor.preparingCart {
+  opacity: 0 !important;
 }
 
 .exporter {

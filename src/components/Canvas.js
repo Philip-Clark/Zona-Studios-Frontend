@@ -35,6 +35,8 @@ const Canvas = () => {
     shouldSave,
     setShouldSave,
     windowSize,
+    preparingCart,
+    setPreparingCart,
   } = useContext(valuesContext);
 
   const [loadingTemplate, setLoadingTemplate] = useState(true);
@@ -67,7 +69,6 @@ const Canvas = () => {
         editor?.canvas.renderAll();
       }
       saveSVG();
-      setShouldSave(false);
     }
   }, [shouldSave, editor, setShouldSave]);
 
@@ -144,9 +145,19 @@ const Canvas = () => {
           <GridLoader color="#5bc6cd" />
         </div>
       )}
+      {preparingCart && (
+        <div className="cartLoading">
+          <GridLoader color="#5bc6cd" />
+          <h2>Preparing Cart</h2>
+          <p>This may take a moment</p>
+        </div>
+      )}
       <FabricJSCanvas
-        className="editor"
-        id={loadingTemplate ? 'loading' : 'ready'}
+        className={
+          'editor ' +
+          (loadingTemplate ? 'loading' : 'ready') +
+          (preparingCart ? ' preparingCart' : '')
+        }
         onReady={onReady}
       />
     </div>

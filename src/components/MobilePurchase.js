@@ -35,17 +35,14 @@ const createCart = async (canvas, url) => {
 };
 
 const MobilePurchase = () => {
-  const { canvas, filename } = useContext(valuesContext);
-
-  const context = useContext(valuesContext);
-  const handleSave = () => {
-    // Logic for saving the purchase
-  };
+  const { canvas, filename, setPreparingCart } = useContext(valuesContext);
 
   const handlePurchase = async () => {
+    setPreparingCart(true);
     const { url } = await uploadImage(canvas, filename);
     const cart = await createCart(canvas, url);
-    if (!cart) console.log('Error creating cart');
+    setPreparingCart(false);
+    if (!cart) return console.log('Error creating cart');
     window.location.href = cart.checkoutUrl;
   };
   return (

@@ -34,12 +34,14 @@ const createCart = async (canvas, url) => {
 };
 
 export function BuyWithShopify() {
-  const { canvas, filename } = useContext(valuesContext);
+  const { canvas, filename, setPreparingCart } = useContext(valuesContext);
 
   const handlePurchase = async () => {
+    setPreparingCart(true);
     const { url } = await uploadImage(canvas, filename);
     const cart = await createCart(canvas, url);
-    if (!cart) console.log('Error creating cart');
+    setPreparingCart(false);
+    if (!cart) return console.log('Error creating cart');
     window.location.href = cart.checkoutUrl;
   };
 

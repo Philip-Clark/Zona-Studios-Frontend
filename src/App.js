@@ -27,6 +27,7 @@ function App() {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const [preparingCart, setPreparingCart] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -66,8 +67,23 @@ function App() {
       filename,
       setFilename,
       windowSize,
+      preparingCart,
+      setPreparingCart,
     }),
-    [selectedTemplate, selectedWood, selectedColor, size, fields, fonts, font, shouldSave]
+    [
+      selectedTemplate,
+      selectedWood,
+      selectedColor,
+      size,
+      fields,
+      fonts,
+      font,
+      shouldSave,
+      preparingCart,
+      canvas,
+      filename,
+      windowSize,
+    ]
   );
 
   const handleSaveSvg = async () => {
