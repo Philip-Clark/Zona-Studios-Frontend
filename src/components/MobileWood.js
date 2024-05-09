@@ -1,10 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import { valuesContext } from '../contexts';
-import { woods } from '../definitions/woods';
-import { colors } from '../definitions/colors';
 
 export default function MobileWood() {
-  const { setSelectedWood, selectedWood, setSelectedColor, selectedColor } =
+  const { setSelectedWood, selectedWood, setSelectedColor, selectedColor, woods, colors } =
     useContext(valuesContext);
 
   const handleWoodSelection = (e, wood) => {

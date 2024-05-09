@@ -27,6 +27,25 @@ function App() {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const [preparingCart, setPreparingCart] = useState(false);
+  const [templates, setTemplates] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [woods, setWoods] = useState([]);
+  const [sizes, setSizes] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/data').then((res) =>
+        res.json()
+      );
+
+      if (response.data.templates) setTemplates(response.data.templates);
+      if (response.data.colors) setColors(response.data.colors);
+      if (response.data.woods) setWoods(response.data.woods);
+      if (response.data.sizes) setSizes(response.data.sizes);
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -49,11 +68,15 @@ function App() {
       selectedTemplate,
       selectedWood,
       selectedColor,
+      colors,
       size,
+      sizes,
+      woods,
       fields,
       fonts,
       font,
       setSelectedTemplate,
+      templates,
       setSelectedWood,
       setSelectedColor,
       setSize,
@@ -66,8 +89,27 @@ function App() {
       filename,
       setFilename,
       windowSize,
+      preparingCart,
+      setPreparingCart,
     }),
-    [selectedTemplate, selectedWood, selectedColor, size, fields, fonts, font, shouldSave]
+    [
+      selectedTemplate,
+      selectedWood,
+      selectedColor,
+      size,
+      sizes,
+      woods,
+      colors,
+      templates,
+      fields,
+      fonts,
+      font,
+      shouldSave,
+      preparingCart,
+      canvas,
+      filename,
+      windowSize,
+    ]
   );
 
   const handleSaveSvg = async () => {

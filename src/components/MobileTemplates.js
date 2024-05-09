@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { valuesContext } from '../contexts';
-import { templates } from '../definitions/templates';
 
 export default function MobileTemplates() {
   const context = useContext(valuesContext);
@@ -22,12 +21,12 @@ export default function MobileTemplates() {
 
   return (
     <div className="horizontal-scroll mobileTemplate MobileStep">
-      {templates.map((template) => (
+      {context.templates.map((template) => (
         <button
           className="horizontal-scroll-item"
           key={template.id}
           style={{
-            backgroundImage: `url(${process.env.PUBLIC_URL}/templates/templateImages/${template.image})`,
+            backgroundImage: `url(${template.image})`,
           }}
           onClick={(e) => handleTemplateSelection(e, template)}
           id={context.selectedTemplate.id === template.id ? 'active' : 'stale'}

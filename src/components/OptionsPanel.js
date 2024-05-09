@@ -2,9 +2,6 @@ import { useContext, useState } from 'react';
 import '../optionsPanel.css';
 
 //? DEFINITIONS
-import { colors } from '../definitions/colors';
-import { woods } from '../definitions/woods';
-import { sizes } from '../definitions/sizes';
 import { valuesContext } from '../contexts';
 import Templates from './Templates';
 
@@ -18,8 +15,11 @@ const OptionsPanel = () => {
     fields,
     setFields,
     setFont,
+    colors,
     fonts,
     font,
+    sizes,
+    woods,
     selectedColor,
   } = useContext(valuesContext);
 
@@ -34,12 +34,14 @@ const OptionsPanel = () => {
           value={size}
           onChange={(e) => {
             setSize(e.target.value);
+            console.log(e.target.value);
           }}
         >
-          {sizes.map((size) => {
+          {sizes.map((_size) => {
+            const size = _size.size.split(' ')[0];
             return (
-              <option value={size}>
-                {size}x{size} inch
+              <option value={_size.id}>
+                {size}x{size} in
               </option>
             );
           })}
