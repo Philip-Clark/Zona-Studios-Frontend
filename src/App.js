@@ -30,6 +30,8 @@ function App() {
   const [preparingCart, setPreparingCart] = useState(false);
   const [templates, setTemplates] = useState([]);
   const [colors, setColors] = useState([]);
+  const [woods, setWoods] = useState([]);
+  const [sizes, setSizes] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -39,6 +41,8 @@ function App() {
 
       if (response.data.templates) setTemplates(response.data.templates);
       if (response.data.colors) setColors(response.data.colors);
+      if (response.data.woods) setWoods(response.data.woods);
+      if (response.data.sizes) setSizes(response.data.sizes);
     }
     fetchData();
   }, []);
@@ -66,6 +70,8 @@ function App() {
       selectedColor,
       colors,
       size,
+      sizes,
+      woods,
       fields,
       fonts,
       font,
@@ -91,6 +97,10 @@ function App() {
       selectedWood,
       selectedColor,
       size,
+      sizes,
+      woods,
+      colors,
+      templates,
       fields,
       fonts,
       font,

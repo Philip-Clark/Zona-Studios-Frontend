@@ -1,9 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import { valuesContext } from '../contexts';
-import { sizes } from '../definitions/sizes';
 
 export default function MobileSize() {
-  const { setSize, size } = useContext(valuesContext);
+  const { setSize, size, sizes } = useContext(valuesContext);
 
   const handleSizeSelection = (e, size) => {
     setSize(`${size}`);
@@ -26,10 +25,10 @@ export default function MobileSize() {
         <button
           key={id}
           className="horizontal-scroll-item size-button"
-          onClick={(e) => handleSizeSelection(e, _size)}
-          id={_size === size ? 'active' : 'stale'}
+          onClick={(e) => handleSizeSelection(e, _size.id)}
+          id={_size.id === size ? 'active' : 'stale'}
         >
-          {_size}"
+          {_size.size}"
         </button>
       ))}
     </div>

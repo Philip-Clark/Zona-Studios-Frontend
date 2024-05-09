@@ -3,18 +3,6 @@ import { valuesContext } from '../contexts';
 
 export default function MobileTemplates() {
   const context = useContext(valuesContext);
-  const [templates, setTemplates] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/data').then((res) =>
-        res.json()
-      );
-      console.log(response);
-      if (response.data.templates) setTemplates(response.data.templates);
-    }
-    fetchData();
-  }, []);
 
   const handleTemplateSelection = (e, template) => {
     context.setSelectedTemplate(template);
@@ -33,7 +21,7 @@ export default function MobileTemplates() {
 
   return (
     <div className="horizontal-scroll mobileTemplate MobileStep">
-      {templates.map((template) => (
+      {context.templates.map((template) => (
         <button
           className="horizontal-scroll-item"
           key={template.id}

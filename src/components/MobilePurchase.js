@@ -3,44 +3,17 @@ import { useContext } from 'react';
 import { valuesContext } from '../contexts';
 import { saveCanvas } from '../helpers/canvasExporter';
 import combineSVGStrings from '../helpers/combineSVGStrings';
-
-const uploadImage = async (canvas, filename) => {
-  const { foregroundString, backgroundString } = await saveCanvas(canvas);
-  const combinedSVG = combineSVGStrings(backgroundString, foregroundString);
-
-  const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/image`, {
-    method: 'POST',
-    body: JSON.stringify({ combinedSVG, filename }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => res.json());
-
-  return { url: response.url };
-};
-
-const createCart = async (canvas, url) => {
-  const { data, extensions, message } = await fetch(
-    `${process.env.REACT_APP_BACKEND_URL}/api/checkout`,
-    {
-      method: 'POST',
-      body: JSON.stringify({ url }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  ).then((res) => res.json());
-  if (!data.cartCreate.cart) return null;
-  return data.cartCreate.cart;
-};
+import { createCart, uploadImage } from '../helpers/checkoutHelper';
 
 const MobilePurchase = () => {
-  const { canvas, filename, setPreparingCart } = useContext(valuesContext);
+  const { canvas, filename, setPreparingCart, wood, size, selectedColor } =
+    useContext(valuesContext);
+  const variantID = size;
 
   const handlePurchase = async () => {
     setPreparingCart(true);
     const { url } = await uploadImage(canvas, filename);
-    const cart = await createCart(canvas, url);
+    const cart = await createCart(canvas, url, wood, variantID, selectedColor);
     setPreparingCart(false);
     if (!cart) return console.log('Error creating cart');
     window.location.href = cart.checkoutUrl;
