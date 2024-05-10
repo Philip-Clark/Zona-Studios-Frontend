@@ -46,6 +46,9 @@ function App() {
       if (response.data.variants) setVariants(response.data.variants);
       setSize(response.data.variants[0].size.split(' ')[0]);
       setVariant(response.data.variants[0]);
+      setSelectedTemplate(response.data.templates[0]);
+      setSelectedWood(response.data.woods[0]);
+      setSelectedColor(response.data.colors[0]);
     }
     fetchData();
   }, []);
