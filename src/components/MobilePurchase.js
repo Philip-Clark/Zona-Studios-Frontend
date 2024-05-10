@@ -6,14 +6,14 @@ import combineSVGStrings from '../helpers/combineSVGStrings';
 import { createCart, uploadImage } from '../helpers/checkoutHelper';
 
 const MobilePurchase = () => {
-  const { canvas, filename, setPreparingCart, wood, size, selectedColor } =
+  const { canvas, filename, setPreparingCart, wood, size, selectedColor, variant } =
     useContext(valuesContext);
   const variantID = size;
 
   const handlePurchase = async () => {
     setPreparingCart(true);
     const { url } = await uploadImage(canvas, filename);
-    const cart = await createCart(canvas, url, wood, variantID, selectedColor);
+    const cart = await createCart(canvas, url, wood, variant.id, selectedColor);
     setPreparingCart(false);
     if (!cart) return console.log('Error creating cart');
     window.location.href = cart.checkoutUrl;
@@ -36,7 +36,11 @@ const MobilePurchase = () => {
             {field.id}: <span>{field.text}</span>
           </p>
         ))} */}
-        <h3>Price available at checkout</h3>
+        {variant.price && (
+          <h3>
+            Estimated Price: ${variant.price.amount} {variant.price.currencyCode}
+          </h3>
+        )}
       </div>
       <button onClick={handlePurchase}>Purchase</button>
     </div>

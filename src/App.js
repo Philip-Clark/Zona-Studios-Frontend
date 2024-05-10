@@ -15,7 +15,8 @@ function App() {
     url: 'https://th.bing.com/th/id/OIP.xCvGaX_HDOIVyGtBmUg44QHaFj?pid=ImgDet&rs=1',
   });
   const [selectedColor, setSelectedColor] = useState({ id: 100, value: '#ffffff' });
-  const [size, setSize] = useState('48x48');
+  const [size, setSize] = useState('1x1');
+  const [variant, setVariant] = useState({});
   const [fields, setFields] = useState([]);
   const [fonts, setFonts] = useState(fontsList);
   const [font, setFont] = useState(fonts[0]);
@@ -31,7 +32,7 @@ function App() {
   const [templates, setTemplates] = useState([]);
   const [colors, setColors] = useState([]);
   const [woods, setWoods] = useState([]);
-  const [sizes, setSizes] = useState([]);
+  const [variants, setVariants] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -42,7 +43,9 @@ function App() {
       if (response.data.templates) setTemplates(response.data.templates);
       if (response.data.colors) setColors(response.data.colors);
       if (response.data.woods) setWoods(response.data.woods);
-      if (response.data.sizes) setSizes(response.data.sizes);
+      if (response.data.variants) setVariants(response.data.variants);
+      setSize(response.data.variants[0].size.split(' ')[0]);
+      setVariant(response.data.variants[0]);
     }
     fetchData();
   }, []);
@@ -70,9 +73,10 @@ function App() {
       selectedColor,
       colors,
       size,
-      sizes,
       woods,
       fields,
+      setVariant,
+      variant,
       fonts,
       font,
       setSelectedTemplate,
@@ -83,6 +87,7 @@ function App() {
       setFields,
       setFont,
       shouldSave,
+      variants,
       canvas,
       setCanvas,
       setShouldSave,
@@ -97,7 +102,8 @@ function App() {
       selectedWood,
       selectedColor,
       size,
-      sizes,
+      variants,
+      variant,
       woods,
       colors,
       templates,

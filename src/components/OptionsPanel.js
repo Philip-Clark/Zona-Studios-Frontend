@@ -18,10 +18,16 @@ const OptionsPanel = () => {
     colors,
     fonts,
     font,
-    sizes,
+    variants,
     woods,
+    setVariant,
     selectedColor,
+    variant,
   } = useContext(valuesContext);
+
+  const sizes = variants.map((variant) => {
+    return variant.size.split(' ')[0];
+  });
 
   return (
     <div className="optionsPanel">
@@ -32,15 +38,16 @@ const OptionsPanel = () => {
           className="sizeSelect"
           title="Sign size"
           value={size}
+          defaultValue={size}
           onChange={(e) => {
             setSize(e.target.value);
-            console.log(e.target.value);
+            setVariant(variants.find((v) => v.size.includes(e.target.value)));
+            console.log(variant);
           }}
         >
-          {sizes.map((_size) => {
-            const size = _size.size.split(' ')[0];
+          {sizes.map((size) => {
             return (
-              <option value={_size.id}>
+              <option value={size}>
                 {size}x{size} in
               </option>
             );
