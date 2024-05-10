@@ -107,7 +107,7 @@ const Canvas = () => {
         (objects) => {
           if (!objects) return;
           const editable = objects.filter((object) => object.id.includes('editable'));
-          editor?.canvas.setActiveObject(editable[0]);
+          if (editable.length > 0) editor?.canvas?.setActiveObject(editable[0]);
           setFields([]);
           setFields(
             editable.map((object) => ({

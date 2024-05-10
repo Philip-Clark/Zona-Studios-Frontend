@@ -4,6 +4,7 @@ import '../optionsPanel.css';
 //? DEFINITIONS
 import { valuesContext } from '../contexts';
 import Templates from './Templates';
+import { BarLoader, GridLoader, SyncLoader } from 'react-spinners';
 
 const OptionsPanel = () => {
   const {
@@ -18,6 +19,7 @@ const OptionsPanel = () => {
     colors,
     fonts,
     font,
+    templates,
     variants,
     woods,
     setVariant,
@@ -33,6 +35,7 @@ const OptionsPanel = () => {
     <div className="optionsPanel">
       <div className="scrollBox">
         <Templates />
+
         <h2> Size </h2>
         <select
           className="sizeSelect"

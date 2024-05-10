@@ -10,10 +10,7 @@ import MobileNav from './components/MobileNav';
 
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState({ id: 0 });
-  const [selectedWood, setSelectedWood] = useState({
-    id: 0,
-    url: 'https://th.bing.com/th/id/OIP.xCvGaX_HDOIVyGtBmUg44QHaFj?pid=ImgDet&rs=1',
-  });
+  const [selectedWood, setSelectedWood] = useState({});
   const [selectedColor, setSelectedColor] = useState({ id: 100, value: '#ffffff' });
   const [size, setSize] = useState('1x1');
   const [variant, setVariant] = useState({});
@@ -29,9 +26,9 @@ function App() {
     height: window.innerHeight,
   });
   const [preparingCart, setPreparingCart] = useState(false);
-  const [templates, setTemplates] = useState([]);
-  const [colors, setColors] = useState([]);
-  const [woods, setWoods] = useState([]);
+  const [templates, setTemplates] = useState([1, 2, 3, 4, 5, 6]);
+  const [colors, setColors] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+  const [woods, setWoods] = useState([1, 2, 3, 4, 5]);
   const [variants, setVariants] = useState([]);
 
   useEffect(() => {
@@ -39,11 +36,15 @@ function App() {
       const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/data').then((res) =>
         res.json()
       );
+      try {
+        if (response.data.templates) setTemplates(response.data.templates);
+        if (response.data.colors) setColors(response.data.colors);
+        if (response.data.woods) setWoods(response.data.woods);
+        if (response.data.variants) setVariants(response.data.variants);
+      } catch (e) {
+        console.log(e);
+      }
 
-      if (response.data.templates) setTemplates(response.data.templates);
-      if (response.data.colors) setColors(response.data.colors);
-      if (response.data.woods) setWoods(response.data.woods);
-      if (response.data.variants) setVariants(response.data.variants);
       setSize(response.data.variants[0].size.split(' ')[0]);
       setVariant(response.data.variants[0]);
       setSelectedTemplate(response.data.templates[0]);
