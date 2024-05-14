@@ -2,6 +2,10 @@ import { resolve } from 'path-browserify';
 import { loadAndUseFont } from './fontLoader';
 import { convertTextToPath } from './textToSvg';
 import { fabric } from 'fabric';
+import BadWordsFilter from 'bad-words';
+
+const filter = new BadWordsFilter({ placeHolder: '*' });
+filter.removeWords('God');
 
 function applyPattern(url, shape, canvas) {
   fabric.Image.fromURL(
@@ -38,7 +42,6 @@ const handleColorChange = (color, canvas) => {
     canvas?.getActiveObjects() === undefined || canvas?.getActiveObjects().length > 0;
 
   const objectsToPaint = canvas?._objects;
-  console.log({ objectsToPaint });
   objectsToPaint?.forEach((object) => {
     if (object.id.includes('background')) return;
 
@@ -50,7 +53,10 @@ const handleTextChange = (text, id, canvas) => {
   canvas?._objects.forEach(async (object) => {
     const pureId = id.replace('foreground', '').replaceAll('  ', '');
     if (!object.id.includes(pureId)) return;
-    object.set({ text: text });
+
+    const cleanedText = text ? filter.clean(text) : '';
+
+    object.set({ text: cleanedText });
     canvas?.renderAll();
 
     if (object.width > canvas.width / 4) object.scaleToWidth(canvas?.width - 100);
