@@ -18,6 +18,7 @@ fabric.Object.prototype.set({
   targetFindTolerance: 4,
   strokeWidth: 0,
   padding: 40,
+  lockScalingFlip: true,
 });
 fabric.Object.prototype.setControlsVisibility({
   mt: false,
