@@ -17,11 +17,12 @@ export const uploadImage = async (canvas, filename) => {
 };
 
 export const createCart = async (canvas, url, wood, variantID, color) => {
+  console.log({ url, wood, variantID, color });
   const { data, extensions, message } = await fetch(
     `${process.env.REACT_APP_BACKEND_URL}/api/checkout`,
     {
       method: 'POST',
-      body: JSON.stringify({ url, wood, variantID, color: color.value }),
+      body: JSON.stringify({ url, wood: wood, variantID, color: color.value }),
       headers: {
         'Content-Type': 'application/json',
       },

@@ -67,7 +67,7 @@ function App() {
   useEffect(() => {
     let fileNameIdentifiers = [fields.map((field) => field.text)];
     fileNameIdentifiers.push(selectedTemplate.name);
-    setFilename(fileNameIdentifiers.join('_'));
+    setFilename(fileNameIdentifiers.join('_').replaceAll(',', '-').replaceAll(' ', '-'));
   }, [fields, selectedTemplate]);
 
   const values = useMemo(
