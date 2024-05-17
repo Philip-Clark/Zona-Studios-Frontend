@@ -3,7 +3,7 @@ import { smoothImage } from './pathTools';
 
 const exportCurrentCanvas = async (fileName, canvas) => {
   canvas.renderAll();
-  const canvasDataUrl = canvas.toDataURL({ format: 'png', quality: 0.1 });
+  const canvasDataUrl = canvas.toDataURL({ format: 'png', quality: 1 });
 
   return new Promise((resolve, reject) => {
     ImageTracer.imageToSVG(
@@ -16,8 +16,8 @@ const exportCurrentCanvas = async (fileName, canvas) => {
         resolve(svgString);
       },
       {
-        ltres: 1.5,
-        qtres: 1.5,
+        ltres: 1,
+        qtres: 3,
         rightangleenhance: true,
         numberofcolors: 2,
         scale: 1,
